@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: transaction-service
+server:
+  port: 8081
+
+
+---
+spring:
+    banner:
+      location: file:./banner.txt
+logging:
+  config: classpath:log4j2-spring.xml

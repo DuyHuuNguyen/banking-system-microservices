@@ -1,0 +1,55 @@
+[2025-09-07 16:10:00.956] [ INFO] [Version:21] - HV000001: Hibernate Validator 8.0.3.Final
+[2025-09-07 16:10:00.994] [ INFO] [UserServiceApplication:53] - Starting UserServiceApplication using Java 23 with PID 1256 (D:\PersonProjectFinal\banking-system-microservices\user-service\target\classes started by Omni in D:\PersonProjectFinal\banking-system-microservices)
+[2025-09-07 16:10:00.995] [DEBUG] [UserServiceApplication:54] - Running with Spring Boot v3.5.5, Spring v6.2.10
+[2025-09-07 16:10:00.996] [ INFO] [UserServiceApplication:652] - No active profile set, falling back to 1 default profile: "default"
+[2025-09-07 16:10:01.058] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2025-09-07 16:10:01.059] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2025-09-07 16:10:02.097] [ INFO] [OptionalLiveReloadServer:59] - LiveReload server is running on port 35729
+[2025-09-07 16:10:02.214] [ INFO] [NettyWebServer:126] - Netty started on port 8080 (http)
+[2025-09-07 16:10:02.220] [ INFO] [UserServiceApplication:59] - Started UserServiceApplication in 1.674 seconds (process running for 2.543)
+[2025-09-07 16:13:05.066] [ INFO] [GracefulShutdown:53] - Commencing graceful shutdown. Waiting for active requests to complete
+[2025-09-07 16:13:05.069] [ INFO] [GracefulShutdown:62] - Graceful shutdown complete
+[2025-09-07 16:14:21.822] [ INFO] [Version:21] - HV000001: Hibernate Validator 8.0.3.Final
+[2025-09-07 16:14:21.862] [ INFO] [UserServiceApplication:53] - Starting UserServiceApplication using Java 23 with PID 6268 (D:\PersonProjectFinal\banking-system-microservices\user-service\target\classes started by Omni in D:\PersonProjectFinal\banking-system-microservices)
+[2025-09-07 16:14:21.863] [DEBUG] [UserServiceApplication:54] - Running with Spring Boot v3.5.5, Spring v6.2.10
+[2025-09-07 16:14:21.864] [ INFO] [UserServiceApplication:652] - No active profile set, falling back to 1 default profile: "default"
+[2025-09-07 16:14:21.927] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2025-09-07 16:14:21.928] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2025-09-07 16:14:22.921] [ INFO] [OptionalLiveReloadServer:59] - LiveReload server is running on port 35729
+[2025-09-07 16:14:23.035] [ INFO] [NettyWebServer:126] - Netty started on port 8080 (http)
+[2025-09-07 16:14:23.041] [ INFO] [UserServiceApplication:59] - Started UserServiceApplication in 1.769 seconds (process running for 2.708)
+[2025-09-07 16:14:35.992] [ INFO] [GracefulShutdown:53] - Commencing graceful shutdown. Waiting for active requests to complete
+[2025-09-07 16:14:35.995] [ INFO] [GracefulShutdown:62] - Graceful shutdown complete
+[2025-09-07 16:14:38.229] [ INFO] [Version:21] - HV000001: Hibernate Validator 8.0.3.Final
+[2025-09-07 16:14:38.263] [ INFO] [UserServiceApplication:53] - Starting UserServiceApplication using Java 23 with PID 21180 (D:\PersonProjectFinal\banking-system-microservices\user-service\target\classes started by Omni in D:\PersonProjectFinal\banking-system-microservices)
+[2025-09-07 16:14:38.264] [DEBUG] [UserServiceApplication:54] - Running with Spring Boot v3.5.5, Spring v6.2.10
+[2025-09-07 16:14:38.265] [ INFO] [UserServiceApplication:652] - No active profile set, falling back to 1 default profile: "default"
+[2025-09-07 16:14:38.316] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2025-09-07 16:14:38.316] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2025-09-07 16:14:39.297] [ INFO] [OptionalLiveReloadServer:59] - LiveReload server is running on port 35729
+[2025-09-07 16:14:39.416] [ INFO] [NettyWebServer:126] - Netty started on port 8080 (http)
+[2025-09-07 16:14:39.422] [ INFO] [UserServiceApplication:59] - Started UserServiceApplication in 1.552 seconds (process running for 2.441)
+[2025-09-07 16:14:50.129] [ INFO] [GracefulShutdown:53] - Commencing graceful shutdown. Waiting for active requests to complete
+[2025-09-07 16:14:50.130] [ INFO] [GracefulShutdown:62] - Graceful shutdown complete
+[2025-09-07 16:15:14.690] [ INFO] [Version:21] - HV000001: Hibernate Validator 8.0.3.Final
+[2025-09-07 16:15:14.724] [ INFO] [UserServiceApplication:53] - Starting UserServiceApplication using Java 23 with PID 1812 (D:\PersonProjectFinal\banking-system-microservices\user-service\target\classes started by Omni in D:\PersonProjectFinal\banking-system-microservices)
+[2025-09-07 16:15:14.724] [DEBUG] [UserServiceApplication:54] - Running with Spring Boot v3.5.5, Spring v6.2.10
+[2025-09-07 16:15:14.725] [ INFO] [UserServiceApplication:652] - No active profile set, falling back to 1 default profile: "default"
+[2025-09-07 16:15:14.775] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2025-09-07 16:15:14.776] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2025-09-07 16:15:15.775] [ INFO] [OptionalLiveReloadServer:59] - LiveReload server is running on port 35729
+[2025-09-07 16:15:15.892] [ INFO] [NettyWebServer:126] - Netty started on port 8080 (http)
+[2025-09-07 16:15:15.898] [ INFO] [UserServiceApplication:59] - Started UserServiceApplication in 1.623 seconds (process running for 2.642)
+[2025-09-07 16:17:17.417] [ INFO] [GracefulShutdown:53] - Commencing graceful shutdown. Waiting for active requests to complete
+[2025-09-07 16:17:17.419] [ INFO] [GracefulShutdown:62] - Graceful shutdown complete
+[2025-09-07 16:17:19.947] [ INFO] [Version:21] - HV000001: Hibernate Validator 8.0.3.Final
+[2025-09-07 16:17:19.978] [ INFO] [UserServiceApplication:53] - Starting UserServiceApplication using Java 23 with PID 3000 (D:\PersonProjectFinal\banking-system-microservices\user-service\target\classes started by Omni in D:\PersonProjectFinal\banking-system-microservices)
+[2025-09-07 16:17:19.979] [DEBUG] [UserServiceApplication:54] - Running with Spring Boot v3.5.5, Spring v6.2.10
+[2025-09-07 16:17:19.980] [ INFO] [UserServiceApplication:652] - No active profile set, falling back to 1 default profile: "default"
+[2025-09-07 16:17:20.032] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2025-09-07 16:17:20.033] [ INFO] [DevToolsPropertyDefaultsPostProcessor:68] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2025-09-07 16:17:20.974] [ INFO] [OptionalLiveReloadServer:59] - LiveReload server is running on port 35729
+[2025-09-07 16:17:21.082] [ INFO] [NettyWebServer:126] - Netty started on port 8080 (http)
+[2025-09-07 16:17:21.091] [ INFO] [UserServiceApplication:59] - Started UserServiceApplication in 1.612 seconds (process running for 2.54)
+[2025-09-07 16:18:43.488] [ INFO] [GracefulShutdown:53] - Commencing graceful shutdown. Waiting for active requests to complete
+[2025-09-07 16:18:43.490] [ INFO] [GracefulShutdown:62] - Graceful shutdown complete

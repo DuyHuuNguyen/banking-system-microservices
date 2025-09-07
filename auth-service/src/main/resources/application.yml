@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: auth-service
+server:
+  port: 8082
+
+
+---
+spring:
+    banner:
+      location: file:./banner.txt
+logging:
+  config: classpath:log4j2-spring.xml

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: api-gateway
+server:
+  port: 8083
+
+
+---
+spring:
+    banner:
+      location: file:./banner.txt
+logging:
+  config: classpath:log4j2-spring.xml

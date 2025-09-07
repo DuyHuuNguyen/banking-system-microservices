@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: eureka-service
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+
+---
+spring:
+    banner:
+      location: file:./banner.txt
+
+logging:
+  config: classpath:log4j2-spring.xml
