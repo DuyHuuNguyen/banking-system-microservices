@@ -1,0 +1,32 @@
+package com.banking_app.user_service.domain.entity.personal_information;
+
+import com.banking_app.user_service.domain.entity.common.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Getter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table("personal_information")
+public class PersonalInformation extends BaseEntity {
+
+  @Column("full_name")
+  private String fullName;
+
+  @Column("date_of_birth")
+  private Long dateOfBirth;
+
+  @Column("sex")
+  private String sex;
+
+  @Column("personal_photo")
+  private String personalPhoto;
+
+  @Column("permanent_address_id")
+  private Long permanentAddressId;
+}

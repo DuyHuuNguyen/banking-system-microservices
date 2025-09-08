@@ -3,8 +3,12 @@ spring:
     name: auth-service
 server:
   port: 8082
-
-
+---
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/db_account_banking
+    username: postgres
+    password: 1111
 ---
 spring:
     banner:
