@@ -1,4 +1,4 @@
-package com.banking_app.transaction_service.domain.entity.transaction_detail;
+package com.banking_app.transaction_service.domain.entity.transaction_method_detail;
 
 import com.banking_app.transaction_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -12,11 +12,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("transaction_method")
-public class TransactionMethod extends BaseEntity {
-  @Column("transaction_id")
-  private Long transactionId;
-
-  @Column("payment_method_id")
-  private Long paymentMethodId;
+@Table("transaction_method_details")
+public class TransactionMethodDetail extends BaseEntity {
+  @Column("payment_method_name")
+  private String paymentMethodName;
 }

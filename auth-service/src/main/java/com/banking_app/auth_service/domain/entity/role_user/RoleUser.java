@@ -1,4 +1,4 @@
-package com.banking_app.auth_service.domain.entity.role;
+package com.banking_app.auth_service.domain.entity.role_user;
 
 import com.banking_app.auth_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
