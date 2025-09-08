@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-
+    <configuration>
+        <logger name="io.r2dbc.spi" level="DEBUG"/>
+        <logger name="io.r2dbc.pool" level="DEBUG"/>
+        <logger name="org.springframework.r2dbc.core" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </configuration>
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
