@@ -1,4 +1,4 @@
-package com.banking_app.user_service.infastructure.service;
+package com.banking_app.user_service.infrastructure.service;
 
 import com.banking_app.user_service.application.service.DocumentLocationDetailService;
 import com.banking_app.user_service.domain.repository.DocumentLocationDetailRepository;

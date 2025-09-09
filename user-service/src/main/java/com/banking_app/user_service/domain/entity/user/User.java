@@ -20,12 +20,6 @@ public class User extends BaseEntity {
   @Column("phone")
   private String phone;
 
-  @Column("is_valid_login")
-  private Boolean isValidLogin;
-
-  @Column("is_one_device")
-  private Boolean isOneDevice;
-
   @Column("personal_information_id")
   private Long personalInformationId;
 

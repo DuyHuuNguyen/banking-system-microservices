@@ -1,4 +1,4 @@
-package com.banking_app.wallet_service.infastructure.service;
+package com.banking_app.wallet_service.infrastructure.service;
 
 import com.banking_app.wallet_service.application.service.FundService;
 import com.banking_app.wallet_service.domain.repository.FundRepository;
