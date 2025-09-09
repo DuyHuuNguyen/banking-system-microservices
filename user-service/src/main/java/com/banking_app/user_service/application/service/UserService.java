@@ -1,2 +1,3 @@
-package com.banking_app.user_service.application.service;public interface UserService {
-}
+package com.banking_app.user_service.application.service;
+
+public interface UserService {}
