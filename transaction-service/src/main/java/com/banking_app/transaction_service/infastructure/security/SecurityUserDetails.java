@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Builder
 public class SecurityUserDetails implements UserDetails {
-  @Getter private Long accountWithRoleDTOId;
+  @Getter private Long accountId;
 
   @Getter private Long userId;
 
@@ -32,7 +32,7 @@ public class SecurityUserDetails implements UserDetails {
 
   public static SecurityUserDetails build(AccountWithRoleDTO accountWithRoleDTO) {
     return SecurityUserDetails.builder()
-        .accountWithRoleDTOId(accountWithRoleDTO.getAccountId())
+        .accountId(accountWithRoleDTO.getAccountId())
         .userId(accountWithRoleDTO.getUserId())
         .email(accountWithRoleDTO.getEmail())
         .phone(accountWithRoleDTO.getPhone())
