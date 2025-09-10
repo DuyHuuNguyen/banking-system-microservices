@@ -9,14 +9,13 @@ import com.banking_app.auth_service.application.service.JwtService;
 import com.banking_app.auth_service.application.service.RoleService;
 import com.example.base.BaseResponse;
 import com.example.enums.TokenTemplate;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import java.util.concurrent.TimeUnit;
 
 @Log4j2
 @Service
@@ -36,23 +35,37 @@ public class AuthFacadeImpl implements AuthFacade {
                 loginRequest.getPersonalIdentificationNumber(), loginRequest.getPassword()))
         .flatMap(
             authentication ->
-               Mono.fromCallable(
-                  () -> {
-                      log.info(" request body: {} , authentication {}",loginRequest,authentication.isAuthenticated() );
-                      var accessToken = jwtService.generateAccessToken(loginRequest.getPersonalIdentificationNumber());
-                      var refreshToken = jwtService.generateRefreshToken(loginRequest.getPersonalIdentificationNumber());
+                Mono.fromCallable(
+                    () -> {
+                      log.info(
+                          " request body: {} , authentication {}",
+                          loginRequest,
+                          authentication.isAuthenticated());
+                      var accessToken =
+                          jwtService.generateAccessToken(
+                              loginRequest.getPersonalIdentificationNumber());
+                      var refreshToken =
+                          jwtService.generateRefreshToken(
+                              loginRequest.getPersonalIdentificationNumber());
 
                       var accessTokenCacheKey =
-                              String.format(TokenTemplate.ACCESS_TOKEN.getContent(), loginRequest.getPersonalIdentificationNumber());
+                          String.format(
+                              TokenTemplate.ACCESS_TOKEN.getContent(),
+                              loginRequest.getPersonalIdentificationNumber());
                       var refreshTokenCacheKey =
-                              String.format(TokenTemplate.REFRESH_TOKEN.getContent(), loginRequest.getPersonalIdentificationNumber());
+                          String.format(
+                              TokenTemplate.REFRESH_TOKEN.getContent(),
+                              loginRequest.getPersonalIdentificationNumber());
 
                       cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
                       cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
 
                       return BaseResponse.build(
-                              LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build(), true);
-                  })
-            );
+                          LoginResponse.builder()
+                              .accessToken(accessToken)
+                              .refreshToken(refreshToken)
+                              .build(),
+                          true);
+                    }));
   }
 }

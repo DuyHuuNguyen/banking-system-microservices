@@ -4,12 +4,11 @@ import com.banking_app.auth_service.api.facade.AuthFacade;
 import com.banking_app.auth_service.api.request.LoginRequest;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.example.base.BaseResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,5 +20,12 @@ public class AuthController {
   @PostMapping("/login")
   public Mono<BaseResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
     return this.authFacade.login(loginRequest);
+  }
+
+  @GetMapping("/he")
+    @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Mono<BaseResponse<Void>> get() {
+    return Mono.just(BaseResponse.ok());
   }
 }

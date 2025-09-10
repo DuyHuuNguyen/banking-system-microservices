@@ -29,3 +29,9 @@ spring:
       location: file:./banner.txt
 logging:
   config: classpath:log4j2-spring.xml
+---
+jwt:
+  secretKey: 16502ee43b73ce88149ca42ab31db111063820asdbd106505a6sfsafg345ecbb33a7bbe6b38578b23baee473c7aaf89c8e490c8e1429fbb264f137d1e2b3fb2ef396d8
+  accessTokenExpirationTime: 259200000 # 3 days
+  refreshTokenExpirationTime: 2419200000 # 2 weeks
+  resetPasswordTokenExpirationTime: 900000 # 15 minutes
