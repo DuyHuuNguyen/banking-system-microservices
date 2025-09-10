@@ -9,6 +9,11 @@ spring:
     url: r2dbc:postgresql://localhost:5432/db_user_banking
     username: postgres
     password: 1111
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
 ---
 spring:
     banner:

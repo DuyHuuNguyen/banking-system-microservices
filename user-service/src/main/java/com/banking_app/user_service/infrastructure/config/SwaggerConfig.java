@@ -1,4 +1,4 @@
-package com.banking_app.transaction_service.infastructure.config;
+package com.banking_app.user_service.infrastructure.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
     info =
         @Info(
-            title = "Transaction Service API",
+            title = "User Service API",
             version = "1.0.0",
-            description = "API documentation for Transaction Service"),
-    servers = {@Server(url = "/"), @Server(url = "/transaction-service")})
+            description = "API documentation for User Service"),
+    servers = {@Server(url = "/"), @Server(url = "/user-service")})
 @SecurityScheme(
     name = "Bearer Authentication",
     type = SecuritySchemeType.HTTP,
@@ -27,8 +27,8 @@ public class SwaggerConfig {
   @Bean
   public GroupedOpenApi apiGroup() {
     return GroupedOpenApi.builder()
-        .group("Transaction-Service")
-        .packagesToScan("com.banking_app.transaction_service.infrastructure.rest.controller")
+        .group("User-Service")
+        .packagesToScan("com.banking_app.user_service.infrastructure.rest.controller")
         .build();
   }
 }
