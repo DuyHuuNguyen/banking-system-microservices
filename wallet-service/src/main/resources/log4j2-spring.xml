@@ -5,7 +5,7 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="[%style{%d{yyyy-MM-dd HH:mm:ss}}{bright_green}  [%t] %highlight{%-5level} %style{[james-dev]}{yellow} [%style{user-service}{bright_green} : %style{${spring:server.port}}{magenta}] %style{%-45c{1}}{cyan} -    %msg%n"
+                    pattern="[%style{%d{yyyy-MM-dd HH:mm:ss}}{bright_green}   %style{%-35c{1}}{cyan} %style{[thread: %thread]}{cyan}  %highlight{%-5level} %style{[james-dev]}{yellow} [%style{wallet-service}{bright_green} : %style{${spring:server.port}}{magenta}] %style{%-45c{1}}{cyan} -    %msg%n"
                     disableAnsi="false"/>
         </Console>
     </Appenders>
