@@ -25,7 +25,4 @@ public class User extends BaseEntity {
 
   @Column("identify_document_information_id")
   private Long identifyDocumentInformationId;
-
-  @Column("user_location_detail_id")
-  private Long userLocationDetailId;
 }

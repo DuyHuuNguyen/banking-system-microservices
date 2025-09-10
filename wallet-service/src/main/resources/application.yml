@@ -3,7 +3,12 @@ spring:
     name: wallet-service
 server:
   port: 8084
-
+---
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/db_wallet_banking
+    username: postgres
+    password: 1111
 
 ---
 spring:
