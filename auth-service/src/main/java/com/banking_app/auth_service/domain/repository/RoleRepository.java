@@ -11,9 +11,9 @@ public interface RoleRepository extends ReactiveCrudRepository<Role, Long> {
     @Query(value = """
     SELECT  r.*
     FROM roles AS r
-    INNER JOIN  role_users AS ru
-    ON r.id = ru.role_id
-    WHERE ru.account_id =:accountId
+    INNER JOIN  account_roles AS ar
+    ON r.id = ar.role_id
+    WHERE ar.user_id =:accountId
     """)
     Flux<Role> findRolesByAccountId(Long accountId);
 }

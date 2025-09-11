@@ -1,4 +1,4 @@
-package com.banking_app.auth_service.domain.entity.role_user;
+package com.banking_app.auth_service.domain.entity.account_role;
 
 import com.banking_app.auth_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("role_users")
-public class RoleUser extends BaseEntity {
+@Table("account_roles")
+public class AccountRole extends BaseEntity {
   @Column("user_id")
   private Long userId;
 
