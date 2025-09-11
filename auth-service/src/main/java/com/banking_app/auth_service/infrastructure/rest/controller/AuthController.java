@@ -23,7 +23,7 @@ public class AuthController {
   }
 
   @GetMapping("/he")
-    @SecurityRequirement(name = "Bearer Authentication")
+  @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_USER')")
   public Mono<BaseResponse<Void>> get() {
     return Mono.just(BaseResponse.ok());
