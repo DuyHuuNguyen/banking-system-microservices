@@ -17,4 +17,12 @@ public interface AccountRepository extends ReactiveCrudRepository<Account, Long>
   WHERE acc.id =:id
   """)
   void updateFirstLoginAndOneDeviceById(Long id,Boolean isFirstLogin, Boolean isOneDevice);
+
+  @Query("""
+  UPDATE account acc
+  SET acc.is_first_login =:isFirstLogin
+  AND acc.is_one_device =:isOneDevice
+  WHERE acc.personal_identification_number =:personalId
+  """)
+  void updateFirstLoginAndOneDeviceByPersonalIdentificationNumber(String personalId, Boolean isFirstLogin, Boolean isOneDevice);
 }

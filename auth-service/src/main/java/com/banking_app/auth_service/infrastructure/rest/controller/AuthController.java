@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.infrastructure.rest.controller;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
+import com.banking_app.auth_service.api.request.CreateOtpRequest;
 import com.banking_app.auth_service.api.request.LoginRequest;
 import com.banking_app.auth_service.api.request.RefreshTokenRequest;
 import com.banking_app.auth_service.api.request.UpsertAccountRequest;
@@ -58,6 +59,24 @@ public class AuthController {
       @PathVariable Long id, @RequestBody @Valid UpsertAccountRequest upsertAccountRequest) {
     upsertAccountRequest.withId(id);
     return this.authFacade.changeInfoAccount(upsertAccountRequest);
+  }
+
+  @PatchMapping("/access-login/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
+  public Mono<BaseResponse<Void>> accessLogin(@PathVariable Long id) {
+    return this.authFacade.accessLogin(id);
+  }
+
+  @PatchMapping("/otp")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Mono<BaseResponse<Void>> createOtp(@RequestBody CreateOtpRequest createOtpRequest) {
+    return this.authFacade.createOtp(createOtpRequest);
   }
 
   @GetMapping("/he")

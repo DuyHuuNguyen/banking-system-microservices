@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.infrastructure.security;
 
 import com.banking_app.auth_service.domain.entity.account.Account;
+import com.example.enums.RoleEnum;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,29 +72,22 @@ public class SecurityUserDetails implements UserDetails {
     return this.password;
   }
 
-  @Override
-  public boolean isEnabled() {
-    log.info("first login is {} | one device {}", this.isFirstLogin, this.isOneDevice);
+  public Boolean isLoggedIn() {
     return !this.isFirstLogin && !this.isOneDevice;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
   }
 
   @Override
   public String getUsername() {
     return this.personalIdentificationNumber;
+  }
+
+  public boolean isValid() {
+    boolean isAllow =
+        this.authorities.stream()
+            .anyMatch(
+                role ->
+                    RoleEnum.ADMIN.getContent().equals(role)
+                        || RoleEnum.EMPLOYEE.getContent().equals(role));
+    return (!this.isFirstLogin && !this.isOneDevice) || isAllow;
   }
 }

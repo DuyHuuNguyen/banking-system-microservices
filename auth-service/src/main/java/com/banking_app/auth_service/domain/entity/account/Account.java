@@ -59,4 +59,8 @@ public class Account extends BaseEntity {
     this.isFirstLogin = accountDTO.getIsFirstLogin();
     this.isOneDevice = accountDTO.getIsOneDevice();
   }
+
+  public void updateOtp(String opt) {
+    this.otp = opt;
+  }
 }

@@ -1,5 +1,6 @@
 package com.banking_app.auth_service.api.facade;
 
+import com.banking_app.auth_service.api.request.CreateOtpRequest;
 import com.banking_app.auth_service.api.request.LoginRequest;
 import com.banking_app.auth_service.api.request.RefreshTokenRequest;
 import com.banking_app.auth_service.api.request.UpsertAccountRequest;
@@ -16,4 +17,8 @@ public interface AuthFacade {
   Mono<BaseResponse<Void>> logout();
 
   Mono<BaseResponse<Void>> changeInfoAccount(UpsertAccountRequest upsertAccountRequest);
+
+  Mono<BaseResponse<Void>> accessLogin(Long id);
+
+  Mono<BaseResponse<Void>> createOtp(CreateOtpRequest createOtpRequest);
 }

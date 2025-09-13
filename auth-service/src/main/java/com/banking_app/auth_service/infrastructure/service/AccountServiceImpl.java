@@ -29,6 +29,13 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  public void updateFirstLoginAndOneDeviceByPersonalId(
+      String personalId, Boolean isFirstLogin, Boolean isOneDevice) {
+    this.accountRepository.updateFirstLoginAndOneDeviceByPersonalIdentificationNumber(
+        personalId, isFirstLogin, isOneDevice);
+  }
+
+  @Override
   public void save(Account account) {
     this.accountRepository.save(account);
   }

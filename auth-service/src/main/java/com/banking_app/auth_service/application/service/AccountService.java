@@ -10,5 +10,8 @@ public interface AccountService {
 
   void updateFirstLoginAndOneDeviceById(Long id, Boolean isFirstLogin, Boolean isOneDevice);
 
+  void updateFirstLoginAndOneDeviceByPersonalId(
+      String personalId, Boolean isFirstLogin, Boolean isOneDevice);
+
   void save(Account account);
 }

@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.infrastructure.facade;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
+import com.banking_app.auth_service.api.request.CreateOtpRequest;
 import com.banking_app.auth_service.api.request.LoginRequest;
 import com.banking_app.auth_service.api.request.RefreshTokenRequest;
 import com.banking_app.auth_service.api.request.UpsertAccountRequest;
@@ -15,9 +16,12 @@ import com.example.dto.AccountDTO;
 import com.example.enums.ErrorCode;
 import com.example.enums.TokenTemplate;
 import com.example.exception.EntityNotFoundException;
+import com.example.exception.OtpException;
+import com.example.exception.PermissionDeniedException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -26,7 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthFacadeImpl implements AuthFacade {
@@ -36,8 +39,9 @@ public class AuthFacadeImpl implements AuthFacade {
   private final PasswordEncoder passwordEncoder;
   private final ReactiveAuthenticationManager reactiveAuthenticationManager;
 
-  private final Boolean IS_FIRST_LOGIN = true;
-  private final Boolean IS_ONE_DEVICE = true;
+  private final Boolean IS_FIRST_LOGIN = false;
+  private final Boolean IS_ONE_DEVICE = false;
+  private final Logger log = LogManager.getLogger(AuthFacade.class);
 
   @Override
   public Mono<BaseResponse<LoginResponse>> login(LoginRequest loginRequest) {
@@ -47,10 +51,14 @@ public class AuthFacadeImpl implements AuthFacade {
                 loginRequest.getPersonalIdentificationNumber(), loginRequest.getPassword()))
         .flatMap(
             authentication -> {
+              var principal = (SecurityUserDetails) authentication.getPrincipal();
+              if (!principal.isValid())
+                return Mono.error(new PermissionDeniedException(ErrorCode.LOGGED_IN));
               log.info(
                   " request body: {} , authentication {}",
                   loginRequest,
                   authentication.isAuthenticated());
+
               var accessToken =
                   jwtService.generateAccessToken(loginRequest.getPersonalIdentificationNumber());
               var refreshToken =
@@ -67,23 +75,18 @@ public class AuthFacadeImpl implements AuthFacade {
 
               cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
               cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
-              return ReactiveSecurityContextHolder.getContext()
-                  .map(SecurityContext::getAuthentication)
-                  .map(authen -> (SecurityUserDetails) authen.getPrincipal())
-                  .flatMap(
-                      securityUserDetails -> {
-                        this.accountService.updateFirstLoginAndOneDeviceById(
-                            securityUserDetails.getAccountId(),
-                            this.IS_FIRST_LOGIN,
-                            this.IS_ONE_DEVICE);
-                        return Mono.just(
-                            BaseResponse.build(
-                                LoginResponse.builder()
-                                    .accessToken(accessToken)
-                                    .accessToken(accessToken)
-                                    .build(),
-                                true));
-                      });
+              log.info("complete cache token");
+              this.accountService.updateFirstLoginAndOneDeviceByPersonalId(
+                  loginRequest.getPersonalIdentificationNumber(),
+                  this.IS_FIRST_LOGIN,
+                  this.IS_ONE_DEVICE);
+              return Mono.just(
+                  BaseResponse.build(
+                      LoginResponse.builder()
+                          .accessToken(accessToken)
+                          .refreshToken(refreshToken)
+                          .build(),
+                      true));
             });
   }
 
@@ -96,17 +99,17 @@ public class AuthFacadeImpl implements AuthFacade {
     log.info("Refresh token | personalIdentifyNumber: {}", personalIdentifyNumber);
 
     var refreshTokenCacheKey =
-        String.format(TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentifyNumber);
+        String.format(TokenTemplate.REFRESH_TOKEN.getContent(), personalIdentifyNumber);
     var isMissingTokenInCache = !this.cacheService.hasKey(refreshTokenCacheKey);
     if (isMissingTokenInCache) {
-      throw new RuntimeException("messing token");
+      throw new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
     }
 
     var accessToken = jwtService.generateAccessToken(personalIdentifyNumber);
     var accessTokenCacheKey =
         String.format(TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentifyNumber);
     cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
-
+    log.info("store into cache");
     return Mono.just(
         BaseResponse.build(RefreshTokenResponse.builder().accessToken(accessToken).build(), true));
   }
@@ -158,6 +161,47 @@ public class AuthFacadeImpl implements AuthFacade {
               account.changeInfo(accountDTO);
               this.accountService.save(account);
               return Mono.just(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> accessLogin(Long id) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(authentication -> (SecurityUserDetails) authentication.getPrincipal())
+        .flatMap(
+            securityUserDetails -> {
+              this.accountService.updateFirstLoginAndOneDeviceById(
+                  id, !this.IS_FIRST_LOGIN, !this.IS_ONE_DEVICE);
+              log.info(
+                  "An employee with id = {} allowed account with id ={} to login.",
+                  securityUserDetails.getAccountId(),
+                  id);
+              return Mono.just(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> createOtp(CreateOtpRequest createOtpRequest) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(authentication -> (SecurityUserDetails) authentication.getPrincipal())
+        .flatMap(
+            securityUserDetails -> {
+              var isValidateOtp =
+                  createOtpRequest.getOpt().equals(createOtpRequest.getOtpConfirm());
+              if (!isValidateOtp) Mono.error(new OtpException(ErrorCode.OTP_NONE_MATCH));
+
+              return this.accountService
+                  .findById(securityUserDetails.getAccountId())
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+                  .flatMap(
+                      account -> {
+                        account.updateOtp(createOtpRequest.getOpt());
+                        this.accountService.save(account);
+                        return Mono.just(BaseResponse.ok());
+                      });
             });
   }
 }
