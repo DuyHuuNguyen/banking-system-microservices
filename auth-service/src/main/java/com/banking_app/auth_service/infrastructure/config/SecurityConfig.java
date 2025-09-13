@@ -30,7 +30,12 @@ public class SecurityConfig {
   private final FilterCreator filterCreator;
 
   private static final String[] WHITE_LISTS = {
-    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/api/v1/auths/login"
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/actuator/**",
+    "/api/v1/auths/login",
+    "/api/v1/auths/refresh-token"
   };
 
   @Bean

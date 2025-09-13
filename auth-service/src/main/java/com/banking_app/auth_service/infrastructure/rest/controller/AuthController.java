@@ -2,7 +2,9 @@ package com.banking_app.auth_service.infrastructure.rest.controller;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
 import com.banking_app.auth_service.api.request.LoginRequest;
+import com.banking_app.auth_service.api.request.RefreshTokenRequest;
 import com.banking_app.auth_service.api.response.LoginResponse;
+import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -20,6 +22,12 @@ public class AuthController {
   @PostMapping("/login")
   public Mono<BaseResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
     return this.authFacade.login(loginRequest);
+  }
+
+  @PostMapping("/refresh-token")
+  public Mono<BaseResponse<RefreshTokenResponse>> refreshToken(
+      @RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
+    return this.authFacade.refreshToken(refreshTokenRequest);
   }
 
   @GetMapping("/he")

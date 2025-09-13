@@ -2,7 +2,9 @@ package com.banking_app.auth_service.infrastructure.facade;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
 import com.banking_app.auth_service.api.request.LoginRequest;
+import com.banking_app.auth_service.api.request.RefreshTokenRequest;
 import com.banking_app.auth_service.api.response.LoginResponse;
+import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.banking_app.auth_service.application.service.AccountService;
 import com.banking_app.auth_service.application.service.CacheService;
 import com.banking_app.auth_service.application.service.JwtService;
@@ -67,5 +69,29 @@ public class AuthFacadeImpl implements AuthFacade {
                               .build(),
                           true);
                     }));
+  }
+
+  @Override
+  public Mono<BaseResponse<RefreshTokenResponse>> refreshToken(
+      RefreshTokenRequest refreshTokenRequest) {
+    var personalIdentifyNumber =
+        this.jwtService.getPersonalIdentificationNumberFromJwtToken(
+            refreshTokenRequest.getRefreshToken());
+    log.info("Refresh token | personalIdentifyNumber: {}", personalIdentifyNumber);
+
+    var refreshTokenCacheKey =
+        String.format(TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentifyNumber);
+    var isMissingTokenInCache = !this.cacheService.hasKey(refreshTokenCacheKey);
+    if (isMissingTokenInCache) {
+      throw new RuntimeException("messing token");
+    }
+
+    var accessToken = jwtService.generateAccessToken(personalIdentifyNumber);
+    var accessTokenCacheKey =
+        String.format(TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentifyNumber);
+    cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
+
+    return Mono.just(
+        BaseResponse.build(RefreshTokenResponse.builder().accessToken(accessToken).build(), true));
   }
 }

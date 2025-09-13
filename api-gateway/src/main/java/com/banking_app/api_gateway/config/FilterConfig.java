@@ -17,7 +17,8 @@ public class FilterConfig implements GlobalFilter {
   private static final Logger log = LogManager.getLogger(FilterConfig.class);
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_APIS = List.of();
+  private static final List<String> PUBLIC_APIS =
+      List.of("/api/v1/auths/login", "/api/v1/auths/refresh-token");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
