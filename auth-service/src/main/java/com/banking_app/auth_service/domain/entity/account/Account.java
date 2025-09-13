@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.domain.entity.account;
 
 import com.banking_app.auth_service.domain.entity.common.BaseEntity;
+import com.example.dto.AccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,4 +39,24 @@ public class Account extends BaseEntity {
 
   @Column("is_one_device")
   private Boolean isOneDevice;
+
+  public void isFirstLogin(Boolean isFirstLogin) {
+    this.isFirstLogin = isFirstLogin;
+  }
+
+  public void isOneDevice(Boolean isOneDevice) {
+    this.isOneDevice = isOneDevice;
+  }
+
+  public void changeInfo(AccountDTO accountDTO) {
+    this.email = accountDTO.getEmail();
+    this.userId = accountDTO.getUserId();
+    this.password = accountDTO.getPasswordEncoded();
+    this.phone = accountDTO.getPhone();
+    this.otp = accountDTO.getOtp();
+    this.personalIdentificationNumber = accountDTO.getPersonalIdentificationNumber();
+    this.userId = accountDTO.getUserId();
+    this.isFirstLogin = accountDTO.getIsFirstLogin();
+    this.isOneDevice = accountDTO.getIsOneDevice();
+  }
 }

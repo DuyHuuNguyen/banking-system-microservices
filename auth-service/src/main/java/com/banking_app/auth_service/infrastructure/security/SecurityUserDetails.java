@@ -4,9 +4,11 @@ import com.banking_app.auth_service.domain.entity.account.Account;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Log4j2
 @Builder
 public class SecurityUserDetails implements UserDetails {
   @Getter private Long accountId;
@@ -67,6 +69,27 @@ public class SecurityUserDetails implements UserDetails {
   @Override
   public String getPassword() {
     return this.password;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    log.info("first login is {} | one device {}", this.isFirstLogin, this.isOneDevice);
+    return !this.isFirstLogin && !this.isOneDevice;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return UserDetails.super.isAccountNonExpired();
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return UserDetails.super.isAccountNonLocked();
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return UserDetails.super.isCredentialsNonExpired();
   }
 
   @Override

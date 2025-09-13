@@ -17,4 +17,19 @@ public class AccountServiceImpl implements AccountService {
     return this.accountRepository.findAccountByPersonalIdentificationNumber(
         personalIdentificationNumber);
   }
+
+  @Override
+  public Mono<Account> findById(Long id) {
+    return this.accountRepository.findById(id);
+  }
+
+  @Override
+  public void updateFirstLoginAndOneDeviceById(Long id, Boolean isFirstLogin, Boolean isOneDevice) {
+    this.accountRepository.updateFirstLoginAndOneDeviceById(id, isFirstLogin, isOneDevice);
+  }
+
+  @Override
+  public void save(Account account) {
+    this.accountRepository.save(account);
+  }
 }
