@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.api.facade;
 
 import com.banking_app.auth_service.api.request.*;
+import com.banking_app.auth_service.api.response.ForgotPasswordResponse;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
@@ -23,4 +24,7 @@ public interface AuthFacade {
   Mono<BaseResponse<Boolean>> isVerifyOtp(VerifyOptRequest verifyOptRequest);
 
   Mono<AccountResponse> findById(Long id);
+
+  Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
+      ForgotPasswordRequest forgotPasswordRequest);
 }

@@ -2,10 +2,12 @@ package com.banking_app.auth_service.infrastructure.rest.controller;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
 import com.banking_app.auth_service.api.request.*;
+import com.banking_app.auth_service.api.response.ForgotPasswordResponse;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -86,7 +88,15 @@ public class AuthController {
     return this.authFacade.isVerifyOtp(verifyOptRequest);
   }
 
-  //  @Hidden
+  @PostMapping("/forgot-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  public Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
+      @RequestBody @Valid ForgotPasswordRequest forgotPasswordRequest) {
+    return this.authFacade.forgotPassword(forgotPasswordRequest);
+  }
+
+  @Hidden
   @GetMapping(value = "/internal/{id}", headers = "secret-api-key=auth-23130075")
   @ResponseStatus(HttpStatus.OK)
   public Mono<AccountResponse> findById(@PathVariable Long id) {

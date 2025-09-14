@@ -2,16 +2,20 @@ package com.banking_app.auth_service.infrastructure.facade;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
 import com.banking_app.auth_service.api.request.*;
+import com.banking_app.auth_service.api.response.ForgotPasswordResponse;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
+import com.banking_app.auth_service.application.dto.MailOTP;
 import com.banking_app.auth_service.application.service.*;
 import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
+import com.banking_app.auth_service.infrastructure.until.GenerateOTPUntil;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import com.example.dto.AccountDTO;
 import com.example.enums.ErrorCode;
+import com.example.enums.OtpTemplate;
 import com.example.enums.TokenTemplate;
 import com.example.exception.EntityNotFoundException;
 import com.example.exception.OtpException;
@@ -38,6 +42,7 @@ public class AuthFacadeImpl implements AuthFacade {
   private final CacheService cacheService;
   private final PasswordEncoder passwordEncoder;
   private final ReactiveAuthenticationManager reactiveAuthenticationManager;
+  private final ProducerEmailService producerEmailService;
 
   private final Boolean IS_FIRST_LOGIN = false;
   private final Boolean IS_ONE_DEVICE = false;
@@ -128,7 +133,7 @@ public class AuthFacadeImpl implements AuthFacade {
               var personalIdentificationNumber = principal.getPersonalIdentificationNumber();
               var refreshTokenCacheKey =
                   String.format(
-                      TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentificationNumber);
+                      TokenTemplate.REFRESH_TOKEN.getContent(), personalIdentificationNumber);
               var accessTokenKey =
                   String.format(
                       TokenTemplate.ACCESS_TOKEN.getContent(), personalIdentificationNumber);
@@ -238,6 +243,46 @@ public class AuthFacadeImpl implements AuthFacade {
         .findById(id)
         .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
         .flatMap(this::loadRoleForAccount);
+  }
+
+  @Override
+  public Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
+      ForgotPasswordRequest forgotPasswordRequest) {
+    return this.accountService
+        .findByPersonalIdentificationNumber(forgotPasswordRequest.getPersonalId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(
+            account -> {
+              var isValidAccount = account.getEmail().equals(forgotPasswordRequest.getEmail());
+              if (!isValidAccount)
+                Mono.error(new PermissionDeniedException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+              var accessToken =
+                  jwtService.generateAccessToken(forgotPasswordRequest.getPersonalId());
+              var accessTokenCacheKey =
+                  String.format(TokenTemplate.ACCESS_TOKEN.getContent(), accessToken);
+
+              var otp = GenerateOTPUntil.generateOTP();
+              var otpKey =
+                  String.format(
+                      OtpTemplate.OTP_TEMPLATE.getContent(), forgotPasswordRequest.getPersonalId());
+              log.info("Opt {}", otp);
+
+              this.cacheService.store(accessTokenCacheKey, accessToken, 10, TimeUnit.MINUTES);
+              this.cacheService.store(otpKey, otp, 10, TimeUnit.MINUTES);
+              var mailOtp =
+                  MailOTP.builder()
+                      .otp(otp)
+                      .subject("Otp of forgot password")
+                      .to(account.getEmail())
+                      .build();
+              this.producerEmailService.send(mailOtp);
+
+              return Mono.just(
+                  BaseResponse.build(
+                      ForgotPasswordResponse.builder().restPasswordToken(accessToken).build(),
+                      true));
+            });
   }
 
   private Mono<AccountResponse> loadRoleForAccount(Account account) {
