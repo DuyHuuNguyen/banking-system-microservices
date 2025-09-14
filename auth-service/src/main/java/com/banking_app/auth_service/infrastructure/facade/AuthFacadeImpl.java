@@ -1,16 +1,14 @@
 package com.banking_app.auth_service.infrastructure.facade;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
-import com.banking_app.auth_service.api.request.CreateOtpRequest;
-import com.banking_app.auth_service.api.request.LoginRequest;
-import com.banking_app.auth_service.api.request.RefreshTokenRequest;
-import com.banking_app.auth_service.api.request.UpsertAccountRequest;
+import com.banking_app.auth_service.api.request.*;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
-import com.banking_app.auth_service.application.service.AccountService;
-import com.banking_app.auth_service.application.service.CacheService;
-import com.banking_app.auth_service.application.service.JwtService;
+import com.banking_app.auth_service.application.service.*;
+import com.banking_app.auth_service.domain.entity.account.Account;
+import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
+import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import com.example.dto.AccountDTO;
 import com.example.enums.ErrorCode;
@@ -24,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +33,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthFacadeImpl implements AuthFacade {
   private final AccountService accountService;
+  private final RoleService roleService;
   private final JwtService jwtService;
   private final CacheService cacheService;
   private final PasswordEncoder passwordEncoder;
@@ -76,17 +76,20 @@ public class AuthFacadeImpl implements AuthFacade {
               cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
               cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
               log.info("complete cache token");
-              this.accountService.updateFirstLoginAndOneDeviceByPersonalId(
-                  loginRequest.getPersonalIdentificationNumber(),
-                  this.IS_FIRST_LOGIN,
-                  this.IS_ONE_DEVICE);
-              return Mono.just(
-                  BaseResponse.build(
-                      LoginResponse.builder()
-                          .accessToken(accessToken)
-                          .refreshToken(refreshToken)
-                          .build(),
-                      true));
+              return this.accountService
+                  .updateFirstLoginAndOneDeviceByPersonalId(
+                      loginRequest.getPersonalIdentificationNumber(),
+                      this.IS_FIRST_LOGIN,
+                      this.IS_ONE_DEVICE)
+                  .flatMap(
+                      response ->
+                          Mono.just(
+                              BaseResponse.build(
+                                  LoginResponse.builder()
+                                      .accessToken(accessToken)
+                                      .refreshToken(refreshToken)
+                                      .build(),
+                                  true)));
             });
   }
 
@@ -199,9 +202,60 @@ public class AuthFacadeImpl implements AuthFacade {
                   .flatMap(
                       account -> {
                         account.updateOtp(createOtpRequest.getOpt());
-                        this.accountService.save(account);
-                        return Mono.just(BaseResponse.ok());
+
+                        return this.accountService
+                            .save(account)
+                            .flatMap(response -> Mono.just(BaseResponse.ok()));
                       });
             });
+  }
+
+  @Override
+  public Mono<BaseResponse<Boolean>> isVerifyOtp(VerifyOptRequest verifyOptRequest) {
+    return ReactiveSecurityContextHolder.getContext()
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            principal ->
+                this.accountService
+                    .findById(principal.getAccountId())
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+                    .flatMap(
+                        account -> {
+                          log.info(account.toString());
+                          return Mono.just(
+                              BaseResponse.build(
+                                  account.isEqualOtp(verifyOptRequest.getOtp()), true));
+                        }));
+  }
+
+  @Override
+  public Mono<AccountResponse> findById(Long id) {
+    return this.accountService
+        .findById(id)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(this::loadRoleForAccount);
+  }
+
+  private Mono<AccountResponse> loadRoleForAccount(Account account) {
+    return this.roleService
+        .findRolesByAccountId(account.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND)))
+        .map(Role::getRoleName)
+        .collectList()
+        .flatMap(
+            roleEnums ->
+                Mono.just(
+                    AccountResponse.builder()
+                        .roles(roleEnums)
+                        .id(account.getId())
+                        .userId(account.getUserId())
+                        .phone(account.getPhone())
+                        .personalIdentificationNumber(account.getPersonalIdentificationNumber())
+                        .email(account.getEmail())
+                        .build()));
   }
 }

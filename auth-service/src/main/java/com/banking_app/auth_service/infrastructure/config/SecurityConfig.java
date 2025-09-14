@@ -35,7 +35,8 @@ public class SecurityConfig {
     "/v3/api-docs/**",
     "/actuator/**",
     "/api/v1/auths/login",
-    "/api/v1/auths/refresh-token"
+    "/api/v1/auths/refresh-token",
+    "/api/v1/auths/internal/**"
   };
 
   @Bean

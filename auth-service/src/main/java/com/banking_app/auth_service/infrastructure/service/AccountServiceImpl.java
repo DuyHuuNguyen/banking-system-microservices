@@ -4,9 +4,11 @@ import com.banking_app.auth_service.application.service.AccountService;
 import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -29,14 +31,14 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public void updateFirstLoginAndOneDeviceByPersonalId(
+  public Mono<Void> updateFirstLoginAndOneDeviceByPersonalId(
       String personalId, Boolean isFirstLogin, Boolean isOneDevice) {
-    this.accountRepository.updateFirstLoginAndOneDeviceByPersonalIdentificationNumber(
+    return this.accountRepository.updateFirstLoginAndOneDeviceByPersonalIdentificationNumber(
         personalId, isFirstLogin, isOneDevice);
   }
 
   @Override
-  public void save(Account account) {
-    this.accountRepository.save(account);
+  public Mono<Account> save(Account account) {
+    return this.accountRepository.save(account);
   }
 }

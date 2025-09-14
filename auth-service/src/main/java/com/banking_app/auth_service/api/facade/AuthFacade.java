@@ -1,11 +1,9 @@
 package com.banking_app.auth_service.api.facade;
 
-import com.banking_app.auth_service.api.request.CreateOtpRequest;
-import com.banking_app.auth_service.api.request.LoginRequest;
-import com.banking_app.auth_service.api.request.RefreshTokenRequest;
-import com.banking_app.auth_service.api.request.UpsertAccountRequest;
+import com.banking_app.auth_service.api.request.*;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
+import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import reactor.core.publisher.Mono;
 
@@ -21,4 +19,8 @@ public interface AuthFacade {
   Mono<BaseResponse<Void>> accessLogin(Long id);
 
   Mono<BaseResponse<Void>> createOtp(CreateOtpRequest createOtpRequest);
+
+  Mono<BaseResponse<Boolean>> isVerifyOtp(VerifyOptRequest verifyOptRequest);
+
+  Mono<AccountResponse> findById(Long id);
 }

@@ -28,7 +28,11 @@ public class AuthTokenInterceptor implements WebFilter {
   private final RoleService roleService;
 
   private final List<String> PUBLIC_APIS =
-      List.of("/actuator/", "/api/v1/auths/login", "/api/v1/auths/refresh-token");
+      List.of(
+          "/actuator/",
+          "/api/v1/auths/login",
+          "/api/v1/auths/refresh-token",
+          "/api/v1/auths/internal/");
   private final List<String> SWAGGER_URLS =
       List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs/", "/favicon.ico");
 

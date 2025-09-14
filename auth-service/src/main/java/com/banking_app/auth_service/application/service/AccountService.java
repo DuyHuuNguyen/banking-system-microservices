@@ -10,8 +10,8 @@ public interface AccountService {
 
   void updateFirstLoginAndOneDeviceById(Long id, Boolean isFirstLogin, Boolean isOneDevice);
 
-  void updateFirstLoginAndOneDeviceByPersonalId(
+  Mono<Void> updateFirstLoginAndOneDeviceByPersonalId(
       String personalId, Boolean isFirstLogin, Boolean isOneDevice);
 
-  void save(Account account);
+  Mono<Account> save(Account account);
 }

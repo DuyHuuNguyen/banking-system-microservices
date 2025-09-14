@@ -9,6 +9,11 @@ spring:
     url: r2dbc:postgresql://localhost:5432/db_account_banking
     username: postgres
     password: 1111
+  logging:
+    level:
+      io.r2dbc.postgresql.QUERY: DEBUG  # Shows actual SQL
+      org.springframework.data.r2dbc: DEBUG
+      io.r2dbc: DEBUG
   data:
     redis:
       host: localhost
@@ -35,3 +40,4 @@ jwt:
   accessTokenExpirationTime: 259200000 # 3 days
   refreshTokenExpirationTime: 2419200000 # 2 weeks
   resetPasswordTokenExpirationTime: 900000 # 15 minutes
+---

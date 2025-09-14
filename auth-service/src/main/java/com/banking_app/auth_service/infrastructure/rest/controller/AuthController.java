@@ -1,12 +1,10 @@
 package com.banking_app.auth_service.infrastructure.rest.controller;
 
 import com.banking_app.auth_service.api.facade.AuthFacade;
-import com.banking_app.auth_service.api.request.CreateOtpRequest;
-import com.banking_app.auth_service.api.request.LoginRequest;
-import com.banking_app.auth_service.api.request.RefreshTokenRequest;
-import com.banking_app.auth_service.api.request.UpsertAccountRequest;
+import com.banking_app.auth_service.api.request.*;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
+import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -77,6 +75,22 @@ public class AuthController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public Mono<BaseResponse<Void>> createOtp(@RequestBody CreateOtpRequest createOtpRequest) {
     return this.authFacade.createOtp(createOtpRequest);
+  }
+
+  @PostMapping("/verify-otp")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Boolean>> isVerifyOtp(@RequestBody VerifyOptRequest verifyOptRequest) {
+    return this.authFacade.isVerifyOtp(verifyOptRequest);
+  }
+
+  //  @Hidden
+  @GetMapping(value = "/internal/{id}", headers = "secret-api-key=auth-23130075")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<AccountResponse> findById(@PathVariable Long id) {
+    return this.authFacade.findById(id);
   }
 
   @GetMapping("/he")

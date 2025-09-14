@@ -5,11 +5,13 @@ import com.example.dto.AccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
+@ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,5 +64,9 @@ public class Account extends BaseEntity {
 
   public void updateOtp(String opt) {
     this.otp = opt;
+  }
+
+  public Boolean isEqualOtp(String otp) {
+    return this.otp.equals(otp);
   }
 }
