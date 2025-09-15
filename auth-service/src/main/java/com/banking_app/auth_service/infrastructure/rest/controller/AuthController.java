@@ -96,6 +96,15 @@ public class AuthController {
     return this.authFacade.forgotPassword(forgotPasswordRequest);
   }
 
+  @PatchMapping("rest-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> restPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+    return this.authFacade.resetPassword(resetPasswordRequest);
+  }
+
   @Hidden
   @GetMapping(value = "/internal/{id}", headers = "secret-api-key=auth-23130075")
   @ResponseStatus(HttpStatus.OK)

@@ -69,4 +69,8 @@ public class Account extends BaseEntity {
   public Boolean isEqualOtp(String otp) {
     return this.otp.equals(otp);
   }
+
+  public void changePassword(String passwordEncoded) {
+    this.password = passwordEncoded;
+  }
 }

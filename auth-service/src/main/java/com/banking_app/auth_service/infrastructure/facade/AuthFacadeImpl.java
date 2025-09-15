@@ -19,6 +19,7 @@ import com.example.enums.OtpTemplate;
 import com.example.enums.TokenTemplate;
 import com.example.exception.EntityNotFoundException;
 import com.example.exception.OtpException;
+import com.example.exception.PasswordException;
 import com.example.exception.PermissionDeniedException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -283,6 +284,37 @@ public class AuthFacadeImpl implements AuthFacade {
                       ForgotPasswordResponse.builder().restPasswordToken(accessToken).build(),
                       true));
             });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest resetPasswordRequest) {
+
+    return ReactiveSecurityContextHolder.getContext()
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails ->
+                this.accountService
+                    .findById(securityUserDetails.getAccountId())
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+                    .flatMap(
+                        account -> {
+                          var isPasswordNonMarched =
+                              !resetPasswordRequest
+                                  .getPassword()
+                                  .equals(resetPasswordRequest.getConfirmPassword());
+                          if (isPasswordNonMarched)
+                            Mono.error(new PasswordException(ErrorCode.PASSWORD_INCORRECT));
+                          var passwordEncoded =
+                              this.passwordEncoder.encode(resetPasswordRequest.getPassword());
+                          account.changePassword(passwordEncoded);
+                          return this.accountService
+                              .save(account)
+                              .flatMap(response -> Mono.just(BaseResponse.ok()));
+                        }));
   }
 
   private Mono<AccountResponse> loadRoleForAccount(Account account) {

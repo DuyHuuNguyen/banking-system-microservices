@@ -11,6 +11,8 @@ public enum ErrorCode {
   ROLE_NOT_FOUND("Role is not found"),
   OTP_NONE_MATCH("Otp don't match"),
   REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
-  LOGGED_IN("Cancel login by policy");
+  LOGGED_IN("Cancel login by policy"),
+  PASSWORD_INCORRECT("Password incorrect"),
+  ;
   private final String message;
 }

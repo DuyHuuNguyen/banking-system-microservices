@@ -27,4 +27,6 @@ public interface AuthFacade {
 
   Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
       ForgotPasswordRequest forgotPasswordRequest);
+
+  Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest resetPasswordRequest);
 }
