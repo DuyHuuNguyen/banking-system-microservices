@@ -14,5 +14,4 @@ public class PaginationResponse<T> {
   private List<T> data;
   private Integer currentPage;
   private Integer pageSize;
-  private Integer totalElements;
 }

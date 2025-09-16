@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseCriteria {
+public class BaseCriteria {
   private Integer currentPage;
   private Integer pageSize;
 
