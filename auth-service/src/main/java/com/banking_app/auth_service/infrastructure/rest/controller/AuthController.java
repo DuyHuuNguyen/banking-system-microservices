@@ -101,7 +101,8 @@ public class AuthController {
   @Operation(tags = {"Auths APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  public Mono<BaseResponse<Void>> restPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+  public Mono<BaseResponse<Void>> restPassword(
+      @RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
     return this.authFacade.resetPassword(resetPasswordRequest);
   }
 

@@ -7,7 +7,11 @@ import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
+
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +31,8 @@ public class AuthTokenInterceptor implements WebFilter {
   private final AccountService accountService;
   private final RoleService roleService;
 
+  private final int TIMEOUT_RANGE = 3;
+
   private final List<String> PUBLIC_APIS =
       List.of(
           "/actuator/",
@@ -40,7 +46,12 @@ public class AuthTokenInterceptor implements WebFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-    if (isSkipAuthentication(exchange)) return chain.filter(exchange);
+    if (isSkipAuthentication(exchange)) return chain.filter(exchange)
+            .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
+            .onErrorResume(TimeoutException.class, ex -> {
+              exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
+              return exchange.getResponse().setComplete();
+            });
 
     Boolean isValidateToken = false;
 
@@ -94,6 +105,11 @@ public class AuthTokenInterceptor implements WebFilter {
       ServerWebExchange exchange, WebFilterChain chain, SecurityUserDetails userDetails) {
     return chain
         .filter(exchange)
+            .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
+            .onErrorResume(TimeoutException.class, ex -> {
+              exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
+              return exchange.getResponse().setComplete();
+            })
         .contextWrite(
             ReactiveSecurityContextHolder.withAuthentication(
                 new UsernamePasswordAuthenticationToken(

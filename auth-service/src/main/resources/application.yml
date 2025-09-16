@@ -59,12 +59,21 @@ rabbitmq:
   user-mail-routing-key: banking-demo
   user-mail-queue: banking-otp-queue
 ---
+management:
+  tracing:
+    sampling:
+      probability: 1.0   # 1.0 = ghi trace 100%, thường để 0.1 (10%) cho production
+  otlp:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans   # endpoint Zipkin
+
+---
 spring:
   mail:
     host: smtp.gmail.com
     port: 587
     username: hduy09092005@gmail.com
-    password: srwmlebtfrsfdxkl   # App password, không phải mật khẩu thường
+    password: srwmlebtfrsfdxkl
     protocol: smtp
     default-encoding: UTF-8
     properties:
@@ -73,9 +82,9 @@ spring:
           auth: true
           starttls:
             enable: true
-            required: true   # ⚡ bắt buộc nâng cấp TLS
+            required: true
           ssl:
-            enable: false    # ⚡ dùng TLS, không dùng SSL ở port 587
+            enable: false
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000

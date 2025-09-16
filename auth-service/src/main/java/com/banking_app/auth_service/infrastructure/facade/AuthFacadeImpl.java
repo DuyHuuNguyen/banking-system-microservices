@@ -32,6 +32,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -82,20 +83,23 @@ public class AuthFacadeImpl implements AuthFacade {
               cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
               cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
               log.info("complete cache token");
-              return this.accountService
-                  .updateFirstLoginAndOneDeviceByPersonalId(
-                      loginRequest.getPersonalIdentificationNumber(),
-                      this.IS_FIRST_LOGIN,
-                      this.IS_ONE_DEVICE)
-                  .flatMap(
-                      response ->
-                          Mono.just(
-                              BaseResponse.build(
-                                  LoginResponse.builder()
-                                      .accessToken(accessToken)
-                                      .refreshToken(refreshToken)
-                                      .build(),
-                                  true)));
+              return
+              //                      this.accountService
+              //                  .updateFirstLoginAndOneDeviceByPersonalId(
+              //                      loginRequest.getPersonalIdentificationNumber(),
+              //                      this.IS_FIRST_LOGIN,
+              //                      this.IS_ONE_DEVICE)
+              //                  .flatMap(
+              //                      response ->
+              Mono.just(
+                  BaseResponse.build(
+                      LoginResponse.builder()
+                          .accessToken(accessToken)
+                          .refreshToken(refreshToken)
+                          .build(),
+                      true))
+              //                )
+              ;
             });
   }
 
@@ -147,6 +151,7 @@ public class AuthFacadeImpl implements AuthFacade {
   }
 
   @Override
+  @Transactional
   public Mono<BaseResponse<Void>> changeInfoAccount(UpsertAccountRequest upsertAccountRequest) {
     return this.accountService
         .findById(upsertAccountRequest.getId())
@@ -287,6 +292,7 @@ public class AuthFacadeImpl implements AuthFacade {
   }
 
   @Override
+  @Transactional
   public Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest resetPasswordRequest) {
 
     return ReactiveSecurityContextHolder.getContext()
