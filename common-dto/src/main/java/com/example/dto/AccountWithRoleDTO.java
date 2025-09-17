@@ -19,7 +19,6 @@ public class AccountWithRoleDTO {
   private String phone;
   private String otp;
   private String personalIdentificationNumber;
-  private Boolean isOneDevice;
-  private Boolean isFirstLogin;
+  private Boolean isActive;
   @Builder.Default private List<RoleEnum> roleEnums = new ArrayList<>();
 }

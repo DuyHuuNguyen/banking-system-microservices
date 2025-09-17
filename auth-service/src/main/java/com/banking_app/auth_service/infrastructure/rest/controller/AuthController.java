@@ -8,6 +8,7 @@ import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import com.example.base.PaginationResponse;
+import com.example.dto.AccountWithRoleDTO;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -126,6 +127,14 @@ public class AuthController {
   public Mono<BaseResponse<Void>> createAccount(
       @RequestBody @Valid UpsertAccountRequest upsertAccountRequest) {
     return this.authFacade.createAccount(upsertAccountRequest);
+  }
+
+  //  @Hidden
+  @PostMapping(
+      value = "/internal/valid-token",
+      headers = "secret-api-key=auth-access-token-23130075")
+  public Mono<AccountWithRoleDTO> validToken(@RequestHeader String accessToken) {
+    return this.authFacade.validToken(accessToken);
   }
 
   @Hidden
