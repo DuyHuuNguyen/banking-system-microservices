@@ -6,6 +6,7 @@ import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import reactor.core.publisher.Mono;
 
 public interface AuthFacade {
@@ -29,4 +30,7 @@ public interface AuthFacade {
       ForgotPasswordRequest forgotPasswordRequest);
 
   Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest resetPasswordRequest);
+
+  Mono<BaseResponse<PaginationResponse<AccountResponse>>> findByFilter(
+      AccountCriteria accountCriteria);
 }

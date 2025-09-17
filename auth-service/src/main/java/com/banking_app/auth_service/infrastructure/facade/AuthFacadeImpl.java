@@ -10,9 +10,11 @@ import com.banking_app.auth_service.application.service.*;
 import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
+import com.banking_app.auth_service.infrastructure.until.AccountSpecification;
 import com.banking_app.auth_service.infrastructure.until.GenerateOTPUntil;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import com.example.dto.AccountDTO;
 import com.example.enums.ErrorCode;
 import com.example.enums.OtpTemplate;
@@ -323,6 +325,52 @@ public class AuthFacadeImpl implements AuthFacade {
                         }));
   }
 
+  @Override
+  public Mono<BaseResponse<PaginationResponse<AccountResponse>>> findByFilter(
+      AccountCriteria accountCriteria) {
+
+    var accountSpecification =
+        AccountSpecification.builder()
+            .personalId(accountCriteria.getPersonalId())
+            .email(accountCriteria.getEmail())
+            .phone(accountCriteria.getPhone())
+            .pageNumber(accountCriteria.getCurrentPage())
+            .pageSize(accountCriteria.getPageSize())
+            .build();
+
+    return this.accountService
+        .findAll(accountSpecification)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(
+            account -> {
+              return this.roleService
+                  .findRolesByAccountId(account.getId())
+                  .collectList()
+                  .map(
+                      roles -> {
+                        return AccountResponse.builder()
+                            .roles(roles.stream().map(Role::getRoleName).toList())
+                            .id(account.getId())
+                            .userId(account.getUserId())
+                            .phone(account.getPhone())
+                            .personalIdentificationNumber(account.getPersonalIdentificationNumber())
+                            .email(account.getEmail())
+                            .build();
+                      });
+            })
+        .collectList()
+        .flatMap(
+            accountResponses ->
+                Mono.just(
+                    BaseResponse.build(
+                        PaginationResponse.<AccountResponse>builder()
+                            .data(accountResponses)
+                            .currentPage(accountCriteria.getCurrentPage())
+                            .pageSize(accountCriteria.getPageSize())
+                            .build(),
+                        true)));
+  }
+
   private Mono<AccountResponse> loadRoleForAccount(Account account) {
     return this.roleService
         .findRolesByAccountId(account.getId())
@@ -340,5 +388,23 @@ public class AuthFacadeImpl implements AuthFacade {
                         .personalIdentificationNumber(account.getPersonalIdentificationNumber())
                         .email(account.getEmail())
                         .build()));
+  }
+
+  private Mono<AccountResponse> loadRoleForAcct(Account account) {
+    return this.roleService
+        .findRolesByAccountId(account.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND)))
+        .map(Role::getRoleName)
+        .collectList()
+        .map(
+            roleEnums ->
+                AccountResponse.builder()
+                    .roles(roleEnums)
+                    .id(account.getId())
+                    .userId(account.getUserId())
+                    .phone(account.getPhone())
+                    .personalIdentificationNumber(account.getPersonalIdentificationNumber())
+                    .email(account.getEmail())
+                    .build());
   }
 }

@@ -3,9 +3,12 @@ package com.banking_app.auth_service.infrastructure.service;
 import com.banking_app.auth_service.application.service.AccountService;
 import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.repository.AccountRepository;
+import com.banking_app.auth_service.infrastructure.until.AccountSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -13,6 +16,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
   private final AccountRepository accountRepository;
+  private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
   @Override
   public Mono<Account> findByPersonalIdentificationNumber(String personalIdentificationNumber) {
@@ -40,5 +44,10 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Mono<Account> save(Account account) {
     return this.accountRepository.save(account);
+  }
+
+  @Override
+  public Flux<Account> findAll(AccountSpecification accountSpecification) {
+    return this.r2dbcEntityTemplate.select(accountSpecification.getQuery(), Account.class);
   }
 }

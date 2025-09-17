@@ -7,10 +7,12 @@ import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -104,6 +106,16 @@ public class AuthController {
   public Mono<BaseResponse<Void>> restPassword(
       @RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
     return this.authFacade.resetPassword(resetPasswordRequest);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE') || hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<PaginationResponse<AccountResponse>>> findByFilter(
+      @NotNull AccountCriteria accountCriteria) {
+    return this.authFacade.findByFilter(accountCriteria);
   }
 
   @Hidden
