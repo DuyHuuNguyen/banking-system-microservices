@@ -24,13 +24,18 @@ spring:
     username: guest
     password: guest
     listener:
-      simple: # nếu bạn dùng SimpleMessageListenerContainer
+      simple:
         retry:
-          enabled: true       # bật retry
-          max-attempts: 5     # số lần thử lại
-          initial-interval: 1000ms # thời gian delay lần đầu (1s)
-          multiplier: 2.0     # nhân đôi delay mỗi lần retry
-          max-interval: 10000ms # tối đa 10s
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
 ---
 management:
   endpoints:
