@@ -10,10 +10,16 @@ spring:
 logging:
   config: classpath:log4j2-spring.xml
 ---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+---
 springdoc:
   api-docs:
     enabled: true
   swagger-ui:
+    disable-swagger-default-url: true
     urls:
       - name: auth-service
         url: /auth-service/v3/api-docs

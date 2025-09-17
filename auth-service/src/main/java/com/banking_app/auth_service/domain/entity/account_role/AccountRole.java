@@ -15,7 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("account_roles")
 public class AccountRole extends BaseEntity {
   @Column("user_id")
-  private Long userId;
+  private Long accountId;
 
   @Column("role_id")
   private Long roleId;

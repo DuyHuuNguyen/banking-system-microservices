@@ -1,6 +1,7 @@
 package com.banking_app.auth_service.infrastructure.rest.interceptor;
 
 import com.example.exception.EntityNotFoundException;
+import com.example.exception.PermissionDeniedException;
 import java.net.URI;
 import java.util.function.Consumer;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,17 @@ public class RestHandlerExceptionInterceptor {
         problem -> {
           problem.setType(URI.create("http://example.com/problems/"));
           problem.setTitle(entityNotFoundException.getMessage());
+        });
+  }
+
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ProblemDetail handleException(PermissionDeniedException permissionDeniedException) {
+    return build(
+        HttpStatus.NOT_FOUND,
+        permissionDeniedException,
+        problem -> {
+          problem.setType(URI.create("http://example.com/problems/"));
+          problem.setTitle(permissionDeniedException.getMessage());
         });
   }
 

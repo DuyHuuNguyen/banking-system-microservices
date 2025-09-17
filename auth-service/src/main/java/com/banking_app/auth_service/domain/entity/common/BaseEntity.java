@@ -32,4 +32,8 @@ public class BaseEntity {
   public void reUpdate() {
     this.updatedAt = Instant.now().toEpochMilli();
   }
+
+  public void changeActive(Boolean isActive) {
+    this.isActive = isActive;
+  }
 }

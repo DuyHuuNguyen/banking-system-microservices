@@ -15,18 +15,31 @@
                     pattern="[%style{%d{yyyy-MM-dd HH:mm:ss}}{bright_green}   %style{%-35c{1}}{cyan} %style{[thread: %thread]}{cyan}  %highlight{%-5level} %style{[james-dev]}{yellow} [%style{auth-service}{bright_green} : %style{${spring:server.port}}{magenta}] %style{%-45c{1}}{cyan} -    %msg%n"
                     disableAnsi="false"/>
         </Console>
+        <SplunkHttp
+                name="splunkhttp"
+                url="http://localhost:8088"
+                token="35a21b2a-0828-4891-b035-c0ee8d804415"
+                host="localhost"
+                index="auth-api-dev"
+                type="raw"
+                source="http-event-logs"
+                sourcetype="log4j"
+                messageFormat="text"
+                disableCertificateValidation="true">
+            <PatternLayout pattern="%m" />
+        </SplunkHttp>
     </Appenders>
 
     <Loggers>
 
         <Logger name="com.banking_app" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileLogger"/>
+<!--            <AppenderRef ref="FileLogger"/>-->
         </Logger>
 
         <Root level="info">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileLogger"/>
+            <AppenderRef ref="console" />
+            <AppenderRef ref="splunkhttp" />
         </Root>
     </Loggers>
 </Configuration>
