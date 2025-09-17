@@ -123,7 +123,8 @@ public class AuthController {
   @PostMapping("/sign-up")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
-  public Mono<BaseResponse<Void>> createAccount(@RequestBody @Valid UpsertAccountRequest upsertAccountRequest){
+  public Mono<BaseResponse<Void>> createAccount(
+      @RequestBody @Valid UpsertAccountRequest upsertAccountRequest) {
     return this.authFacade.createAccount(upsertAccountRequest);
   }
 

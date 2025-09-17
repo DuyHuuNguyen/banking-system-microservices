@@ -38,7 +38,7 @@ public class SecurityConfig {
     "/api/v1/auths/refresh-token",
     "/api/v1/auths/internal/**",
     "/api/v1/auths/forgot-password",
-          "/api/v1/auths/sign-up"
+    "/api/v1/auths/sign-up"
   };
 
   @Bean

@@ -19,7 +19,10 @@ public class FilterConfig implements GlobalFilter {
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
   private static final List<String> PUBLIC_APIS =
       List.of(
-          "/api/v1/auths/login", "/api/v1/auths/refresh-token", "/api/v1/auths/forgot-password",       "/api/v1/auths/sign-up");
+          "/api/v1/auths/login",
+          "/api/v1/auths/refresh-token",
+          "/api/v1/auths/forgot-password",
+          "/api/v1/auths/sign-up");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

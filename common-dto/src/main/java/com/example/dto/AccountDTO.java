@@ -17,4 +17,5 @@ public class AccountDTO {
   private String phone;
   private String otp;
   private String personalIdentificationNumber;
+  private Boolean isActive;
 }
