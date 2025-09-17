@@ -63,16 +63,18 @@ public class AuthController {
     return this.authFacade.changeInfoAccount(upsertAccountRequest);
   }
 
-  @PatchMapping("/access-login/{id}")
+  @PatchMapping("/active/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-  public Mono<BaseResponse<Void>> accessLogin(@PathVariable Long id) {
-    return this.authFacade.accessLogin(id);
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE') || hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<Void>> changeActive(
+      @PathVariable Long id, @RequestBody @Valid ChangeActiveRequest changeActiveRequest) {
+    changeActiveRequest.withId(id);
+    return this.authFacade.changeActive(changeActiveRequest);
   }
 
-  @PatchMapping("/otp")
+  @PatchMapping("/transaction-otp")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
@@ -123,12 +125,5 @@ public class AuthController {
   @ResponseStatus(HttpStatus.OK)
   public Mono<AccountResponse> findById(@PathVariable Long id) {
     return this.authFacade.findById(id);
-  }
-
-  @GetMapping("/he")
-  @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public Mono<BaseResponse<Void>> get() {
-    return Mono.just(BaseResponse.ok());
   }
 }

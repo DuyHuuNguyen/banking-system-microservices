@@ -30,6 +30,8 @@ public class SecurityUserDetails implements UserDetails {
 
   @Getter private Boolean isFirstLogin;
 
+  @Getter private Boolean isActive;
+
   @Getter private Collection<? extends GrantedAuthority> authorities;
 
   public static SecurityUserDetails build(Account account) {
@@ -41,8 +43,9 @@ public class SecurityUserDetails implements UserDetails {
         .phone(account.getPhone())
         .otp(account.getOtp())
         .personalIdentificationNumber(account.getPersonalIdentificationNumber())
-        .isFirstLogin(account.getIsFirstLogin())
-        .isOneDevice(account.getIsOneDevice())
+        //        .isFirstLogin(account.getIsFirstLogin())
+        //        .isOneDevice(account.getIsOneDevice())
+        .isActive(account.isActive())
         .build();
   }
 
@@ -56,9 +59,10 @@ public class SecurityUserDetails implements UserDetails {
         .phone(account.getPhone())
         .otp(account.getOtp())
         .personalIdentificationNumber(account.getPersonalIdentificationNumber())
-        .isFirstLogin(account.getIsFirstLogin())
-        .isOneDevice(account.getIsOneDevice())
+        //        .isFirstLogin(account.getIsFirstLogin())
+        //        .isOneDevice(account.getIsOneDevice())
         .authorities(authorities)
+        .isActive(account.isActive())
         .build();
   }
 
@@ -88,6 +92,6 @@ public class SecurityUserDetails implements UserDetails {
                 role ->
                     RoleEnum.ADMIN.getContent().equals(role)
                         || RoleEnum.EMPLOYEE.getContent().equals(role));
-    return (!this.isFirstLogin && !this.isOneDevice) || isAllow;
+    return !this.isFirstLogin && !this.isOneDevice;
   }
 }

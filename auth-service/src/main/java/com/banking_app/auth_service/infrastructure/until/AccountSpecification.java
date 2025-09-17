@@ -68,12 +68,14 @@ public class AccountSpecification {
 
     @Override
     public AccountSpecificationBuilder pageSize(Integer pageSize) {
+      if (pageSize == null) return this;
       this.pageSize = pageSize;
       return this;
     }
 
     @Override
     public AccountSpecificationBuilder pageNumber(Integer pageNumber) {
+      if (pageNumber == null) return this;
       this.pageNumber = pageNumber;
       return this;
     }

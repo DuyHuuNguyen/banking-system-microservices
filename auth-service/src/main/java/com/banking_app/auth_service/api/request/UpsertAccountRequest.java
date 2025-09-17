@@ -19,8 +19,6 @@ public class UpsertAccountRequest {
   private String personalIdentificationNumber;
   private String otp;
   private Long userId;
-  private Boolean isFirstLogin;
-  private Boolean isOneDevice;
 
   public void withId(Long id) {
     this.id = id;

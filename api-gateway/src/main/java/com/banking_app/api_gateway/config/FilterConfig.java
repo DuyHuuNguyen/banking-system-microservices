@@ -18,7 +18,8 @@ public class FilterConfig implements GlobalFilter {
 
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
   private static final List<String> PUBLIC_APIS =
-      List.of("/api/v1/auths/login", "/api/v1/auths/refresh-token");
+      List.of(
+          "/api/v1/auths/login", "/api/v1/auths/refresh-token", "/api/v1/auths/forgot-password");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -36,7 +37,7 @@ public class FilterConfig implements GlobalFilter {
     List<String> authenticationHeaders = headers.get(HttpHeaders.AUTHORIZATION);
 
     var isMissingAcceptToken =
-        authenticationHeaders != null && authenticationHeaders.get(0).startsWith("Bearer ");
+        authenticationHeaders != null && !authenticationHeaders.get(0).startsWith("Bearer ");
 
     if (isMissingAcceptToken) {
       log.info("Request {} is missing token in header", path);

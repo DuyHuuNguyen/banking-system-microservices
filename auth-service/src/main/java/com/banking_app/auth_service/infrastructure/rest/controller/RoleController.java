@@ -26,7 +26,7 @@ public class RoleController {
   @PatchMapping()
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-      tags = {"Auths APIs"},
+      tags = {"Role APIs"},
       summary = "change roles to account by admin")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -38,7 +38,7 @@ public class RoleController {
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-      tags = {"Auths APIs"},
+      tags = {"Role APIs"},
       summary = "Creating role by admin, if server response false,the role is created")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -50,7 +50,7 @@ public class RoleController {
   @GetMapping()
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-      tags = {"Auths APIs"},
+      tags = {"Role APIs"},
       summary = "Creating role by admin, if server response false,the role is created")
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")

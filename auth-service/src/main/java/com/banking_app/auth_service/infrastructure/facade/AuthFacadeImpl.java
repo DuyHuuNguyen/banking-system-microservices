@@ -61,7 +61,7 @@ public class AuthFacadeImpl implements AuthFacade {
         .flatMap(
             authentication -> {
               var principal = (SecurityUserDetails) authentication.getPrincipal();
-              if (!principal.isValid())
+              if (!principal.getIsActive())
                 return Mono.error(new PermissionDeniedException(ErrorCode.LOGGED_IN));
               log.info(
                   " request body: {} , authentication {}",
@@ -85,23 +85,13 @@ public class AuthFacadeImpl implements AuthFacade {
               cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
               cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
               log.info("complete cache token");
-              return
-              //                      this.accountService
-              //                  .updateFirstLoginAndOneDeviceByPersonalId(
-              //                      loginRequest.getPersonalIdentificationNumber(),
-              //                      this.IS_FIRST_LOGIN,
-              //                      this.IS_ONE_DEVICE)
-              //                  .flatMap(
-              //                      response ->
-              Mono.just(
+              return Mono.just(
                   BaseResponse.build(
                       LoginResponse.builder()
                           .accessToken(accessToken)
                           .refreshToken(refreshToken)
                           .build(),
-                      true))
-              //                )
-              ;
+                      true));
             });
   }
 
@@ -171,28 +161,9 @@ public class AuthFacadeImpl implements AuthFacade {
                           upsertAccountRequest.getPersonalIdentificationNumber())
                       .otp(upsertAccountRequest.getOtp())
                       .userId(upsertAccountRequest.getUserId())
-                      .isOneDevice(upsertAccountRequest.getIsOneDevice())
-                      .isFirstLogin(upsertAccountRequest.getIsFirstLogin())
                       .build();
               account.changeInfo(accountDTO);
               this.accountService.save(account);
-              return Mono.just(BaseResponse.ok());
-            });
-  }
-
-  @Override
-  public Mono<BaseResponse<Void>> accessLogin(Long id) {
-    return ReactiveSecurityContextHolder.getContext()
-        .map(SecurityContext::getAuthentication)
-        .map(authentication -> (SecurityUserDetails) authentication.getPrincipal())
-        .flatMap(
-            securityUserDetails -> {
-              this.accountService.updateFirstLoginAndOneDeviceById(
-                  id, !this.IS_FIRST_LOGIN, !this.IS_ONE_DEVICE);
-              log.info(
-                  "An employee with id = {} allowed account with id ={} to login.",
-                  securityUserDetails.getAccountId(),
-                  id);
               return Mono.just(BaseResponse.ok());
             });
   }
@@ -369,6 +340,23 @@ public class AuthFacadeImpl implements AuthFacade {
                             .pageSize(accountCriteria.getPageSize())
                             .build(),
                         true)));
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> changeActive(ChangeActiveRequest changeActiveRequest) {
+    return this.accountService
+        .findById(changeActiveRequest.getAccountId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .map(
+            account -> {
+              account.changeActive(changeActiveRequest.getIsActive());
+              return account;
+            })
+        .flatMap(
+            account -> {
+              return this.accountService.save(account).then(Mono.just(BaseResponse.ok()));
+            });
   }
 
   private Mono<AccountResponse> loadRoleForAccount(Account account) {

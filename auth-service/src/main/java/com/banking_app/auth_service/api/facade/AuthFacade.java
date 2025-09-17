@@ -18,8 +18,6 @@ public interface AuthFacade {
 
   Mono<BaseResponse<Void>> changeInfoAccount(UpsertAccountRequest upsertAccountRequest);
 
-  Mono<BaseResponse<Void>> accessLogin(Long id);
-
   Mono<BaseResponse<Void>> createOtp(CreateOtpRequest createOtpRequest);
 
   Mono<BaseResponse<Boolean>> isVerifyOtp(VerifyOptRequest verifyOptRequest);
@@ -33,4 +31,6 @@ public interface AuthFacade {
 
   Mono<BaseResponse<PaginationResponse<AccountResponse>>> findByFilter(
       AccountCriteria accountCriteria);
+
+  Mono<BaseResponse<Void>> changeActive(ChangeActiveRequest changeActiveRequest);
 }

@@ -39,7 +39,7 @@ public class AuthTokenInterceptor implements WebFilter {
           "/api/v1/auths/internal/",
           "/api/v1/auths/forgot-password");
   private final List<String> SWAGGER_URLS =
-      List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs/", "/favicon.ico");
+      List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs", "/favicon.ico");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {

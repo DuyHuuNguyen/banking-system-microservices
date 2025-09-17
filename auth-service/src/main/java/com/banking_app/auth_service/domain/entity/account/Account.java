@@ -36,20 +36,6 @@ public class Account extends BaseEntity {
   @Column("user_id")
   private Long userId;
 
-  @Column("is_first_login")
-  private Boolean isFirstLogin;
-
-  @Column("is_one_device")
-  private Boolean isOneDevice;
-
-  public void isFirstLogin(Boolean isFirstLogin) {
-    this.isFirstLogin = isFirstLogin;
-  }
-
-  public void isOneDevice(Boolean isOneDevice) {
-    this.isOneDevice = isOneDevice;
-  }
-
   public void changeInfo(AccountDTO accountDTO) {
     this.email = accountDTO.getEmail();
     this.userId = accountDTO.getUserId();
@@ -58,8 +44,6 @@ public class Account extends BaseEntity {
     this.otp = accountDTO.getOtp();
     this.personalIdentificationNumber = accountDTO.getPersonalIdentificationNumber();
     this.userId = accountDTO.getUserId();
-    this.isFirstLogin = accountDTO.getIsFirstLogin();
-    this.isOneDevice = accountDTO.getIsOneDevice();
   }
 
   public void updateOtp(String opt) {
