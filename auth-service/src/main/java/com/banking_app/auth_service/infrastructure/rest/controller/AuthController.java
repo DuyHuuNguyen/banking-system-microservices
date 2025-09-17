@@ -120,6 +120,13 @@ public class AuthController {
     return this.authFacade.findByFilter(accountCriteria);
   }
 
+  @PostMapping("/sign-up")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  public Mono<BaseResponse<Void>> createAccount(@RequestBody @Valid UpsertAccountRequest upsertAccountRequest){
+    return this.authFacade.createAccount(upsertAccountRequest);
+  }
+
   @Hidden
   @GetMapping(value = "/internal/{id}", headers = "secret-api-key=auth-23130075")
   @ResponseStatus(HttpStatus.OK)

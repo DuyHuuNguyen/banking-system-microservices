@@ -33,4 +33,6 @@ public interface AuthFacade {
       AccountCriteria accountCriteria);
 
   Mono<BaseResponse<Void>> changeActive(ChangeActiveRequest changeActiveRequest);
+
+  Mono<BaseResponse<Void>> createAccount(UpsertAccountRequest upsertAccountRequest);
 }

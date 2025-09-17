@@ -8,6 +8,7 @@ import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.banking_app.auth_service.application.dto.MailOTP;
 import com.banking_app.auth_service.application.service.*;
 import com.banking_app.auth_service.domain.entity.account.Account;
+import com.banking_app.auth_service.domain.entity.account_role.AccountRole;
 import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
 import com.banking_app.auth_service.infrastructure.until.AccountSpecification;
@@ -18,6 +19,7 @@ import com.example.base.PaginationResponse;
 import com.example.dto.AccountDTO;
 import com.example.enums.ErrorCode;
 import com.example.enums.OtpTemplate;
+import com.example.enums.RoleEnum;
 import com.example.enums.TokenTemplate;
 import com.example.exception.EntityNotFoundException;
 import com.example.exception.OtpException;
@@ -42,6 +44,7 @@ import reactor.core.publisher.Mono;
 public class AuthFacadeImpl implements AuthFacade {
   private final AccountService accountService;
   private final RoleService roleService;
+  private final AccountRoleService accountRoleService;
   private final JwtService jwtService;
   private final CacheService cacheService;
   private final PasswordEncoder passwordEncoder;
@@ -356,6 +359,39 @@ public class AuthFacadeImpl implements AuthFacade {
         .flatMap(
             account -> {
               return this.accountService.save(account).then(Mono.just(BaseResponse.ok()));
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> createAccount(UpsertAccountRequest upsertAccountRequest) {
+    var passwordEncoded = this.passwordEncoder.encode(upsertAccountRequest.getPassword());
+    var account =
+        Account.builder()
+            .password(passwordEncoded)
+            .email(upsertAccountRequest.getEmail())
+            .userId(upsertAccountRequest.getUserId())
+            .personalIdentificationNumber(upsertAccountRequest.getPersonalIdentificationNumber())
+            .phone(upsertAccountRequest.getPhone())
+            .otp(upsertAccountRequest.getOtp())
+            .build();
+    return this.accountService
+        .save(account)
+        .flatMap(
+            accountCreated -> {
+              return this.roleService
+                  .findByRoleName(RoleEnum.USER)
+                  .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND)))
+                  .flatMap(
+                      role -> {
+                        var accountWithRoleUser =
+                            AccountRole.builder()
+                                .accountId(accountCreated.getId())
+                                .roleId(role.getId())
+                                .build();
+                        return this.accountRoleService
+                            .save(accountWithRoleUser)
+                            .then(Mono.just(BaseResponse.ok()));
+                      });
             });
   }
 
