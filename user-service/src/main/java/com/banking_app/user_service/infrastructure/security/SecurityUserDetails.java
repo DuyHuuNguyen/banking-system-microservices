@@ -1,11 +1,13 @@
 package com.banking_app.user_service.infrastructure.security;
 
 import com.example.dto.AccountDTO;
+import com.example.dto.AccountWithRoleDTO;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Log4j2
@@ -30,6 +32,24 @@ public class SecurityUserDetails implements UserDetails {
   @Getter private Boolean isActive;
 
   @Getter private Collection<? extends GrantedAuthority> authorities;
+
+  public static SecurityUserDetails build(AccountWithRoleDTO accountWithRoleDTO) {
+    //    var roles = ;
+    return SecurityUserDetails.builder()
+        .accountId(accountWithRoleDTO.getAccountId())
+        .userId(accountWithRoleDTO.getUserId())
+        .userId(accountWithRoleDTO.getUserId())
+        .email(accountWithRoleDTO.getEmail())
+        .phone(accountWithRoleDTO.getPhone())
+        .otp(accountWithRoleDTO.getOtp())
+        .personalIdentificationNumber(accountWithRoleDTO.getPersonalIdentificationNumber())
+        .isActive(accountWithRoleDTO.getIsActive())
+        .authorities(
+            accountWithRoleDTO.getRoleEnums().stream()
+                .map(roleEnum -> new SimpleGrantedAuthority(roleEnum.getContent()))
+                .toList())
+        .build();
+  }
 
   public static SecurityUserDetails build(AccountDTO account) {
     return SecurityUserDetails.builder()

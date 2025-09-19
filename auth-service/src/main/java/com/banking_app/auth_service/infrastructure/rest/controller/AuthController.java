@@ -15,11 +15,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/auths")
 @RequiredArgsConstructor
@@ -129,11 +131,12 @@ public class AuthController {
     return this.authFacade.createAccount(upsertAccountRequest);
   }
 
-  //  @Hidden
+  @Hidden
   @PostMapping(
-      value = "/internal/valid-token",
+      value = "/internal/parse-token",
       headers = "secret-api-key=auth-access-token-23130075")
   public Mono<AccountWithRoleDTO> validToken(@RequestHeader String accessToken) {
+    log.info("run parse token {}", accessToken);
     return this.authFacade.validToken(accessToken);
   }
 
