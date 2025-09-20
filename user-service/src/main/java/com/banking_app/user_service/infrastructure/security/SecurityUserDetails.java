@@ -2,6 +2,7 @@ package com.banking_app.user_service.infrastructure.security;
 
 import com.example.dto.AccountDTO;
 import com.example.dto.AccountWithRoleDTO;
+import com.example.server.grpc.AuthResponse;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,16 +26,11 @@ public class SecurityUserDetails implements UserDetails {
 
   @Getter private String personalIdentificationNumber;
 
-  @Getter private Boolean isOneDevice;
-
-  @Getter private Boolean isFirstLogin;
-
   @Getter private Boolean isActive;
 
   @Getter private Collection<? extends GrantedAuthority> authorities;
 
   public static SecurityUserDetails build(AccountWithRoleDTO accountWithRoleDTO) {
-    //    var roles = ;
     return SecurityUserDetails.builder()
         .accountId(accountWithRoleDTO.getAccountId())
         .userId(accountWithRoleDTO.getUserId())
@@ -90,5 +86,18 @@ public class SecurityUserDetails implements UserDetails {
   @Override
   public String getUsername() {
     return this.personalIdentificationNumber;
+  }
+
+  public static SecurityUserDetails build(AuthResponse authResponse) {
+    return SecurityUserDetails.builder()
+        .accountId(authResponse.getAccountId())
+        .userId(authResponse.getUserId())
+        .email(authResponse.getEmail())
+        .phone(authResponse.getPhone())
+        .otp(authResponse.getOtp())
+        .personalIdentificationNumber(authResponse.getPersonalId())
+        .isActive(authResponse.getIsActive())
+        .authorities(authResponse.getRolesList().stream().map(SimpleGrantedAuthority::new).toList())
+        .build();
   }
 }

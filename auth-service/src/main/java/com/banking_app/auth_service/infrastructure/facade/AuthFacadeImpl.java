@@ -429,7 +429,7 @@ public class AuthFacadeImpl implements AuthFacade {
                         .userId(account.getUserId())
                         .roleEnums(roles)
                         .personalIdentificationNumber(account.getPersonalIdentificationNumber())
-                            .isEnabled(true)
+                        .isEnabled(true)
                         .build()));
   }
 

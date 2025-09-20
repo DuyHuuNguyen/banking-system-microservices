@@ -1,5 +1,6 @@
 package com.banking_app.user_service.infrastructure.config;
 
+import com.banking_app.user_service.application.service.AuthGrpcClientService;
 import com.banking_app.user_service.application.service.AuthService;
 import com.banking_app.user_service.infrastructure.rest.interceptor.AuthTokenInterceptor;
 import com.banking_app.user_service.infrastructure.security.SecurityReactiveUserDetailService;
@@ -49,7 +50,8 @@ public class SecurityConfig {
   public SecurityWebFilterChain springSecurityFilterChain(
       ServerHttpSecurity http,
       ReactiveAuthenticationManager reactiveAuthenticationManager,
-      AuthService authService) {
+      AuthService authService,
+      AuthGrpcClientService authGrpcClientService) {
     http.csrf(ServerHttpSecurity.CsrfSpec::disable)
         .cors(ServerHttpSecurity.CorsSpec::disable)
         .httpBasic(
@@ -61,7 +63,9 @@ public class SecurityConfig {
         .authorizeExchange(
             exchanges ->
                 exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated())
-        .addFilterBefore(new AuthTokenInterceptor(authService), SecurityWebFiltersOrder.HTTP_BASIC)
+        .addFilterBefore(
+            new AuthTokenInterceptor(authService, authGrpcClientService),
+            SecurityWebFiltersOrder.HTTP_BASIC)
         .authenticationManager(reactiveAuthenticationManager);
     return http.build();
   }

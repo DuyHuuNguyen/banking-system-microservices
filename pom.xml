@@ -23,6 +23,7 @@
         <module>common-resources</module>
         <module>common-proto</module>
     </modules>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

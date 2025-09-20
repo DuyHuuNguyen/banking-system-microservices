@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UpsertUserRequest {
-    @Hidden
-    private Long id;
-
+  @Hidden private Long id;
 }
