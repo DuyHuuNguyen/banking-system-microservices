@@ -82,7 +82,7 @@
 
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>common-dto</artifactId>
+			<artifactId>common-resources</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 
@@ -90,6 +90,13 @@
 			<groupId>com.example</groupId>
 			<artifactId>common-proto</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.devh/grpc-client-spring-boot-starter -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-client-spring-boot-starter</artifactId>
+			<version>3.1.0.RELEASE</version>
 		</dependency>
 
 		<dependency>

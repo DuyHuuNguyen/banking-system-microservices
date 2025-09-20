@@ -1,0 +1,8 @@
+--java_out=D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\target\generated-sources\protobuf
+--plugin=protoc-gen-jGDjpmlhjoYjWV5g3i2PepWIGhA=C:\Users\Omni\.m2\repository\io\grpc\protoc-gen-grpc-java\1.72.0\protoc-gen-grpc-java-1.72.0-windows-x86_64.exe
+--jGDjpmlhjoYjWV5g3i2PepWIGhA_out=D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\target\generated-sources\protobuf
+--jGDjpmlhjoYjWV5g3i2PepWIGhA_opt=@generated=omit
+D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\src\main\proto\auth.proto
+--proto_path=D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\src\main\proto
+--proto_path=D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\target\protobuf-maven-plugin\generate\generate\archives\protobuf-java-4.30.2-JmdCG_LkSOJ80xjMRgB8ykUjx7Q
+--proto_path=D:\BANKING_APP_BACKEND\banking-system-microservices\common-proto\target\protobuf-maven-plugin\generate\generate\archives\proto-google-common-protos-2.54.1-ipEG5foGpyKZZWu7z5Zbntt7dpM
