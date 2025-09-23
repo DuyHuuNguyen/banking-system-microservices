@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("uses")
+@Table("users")
 public class User extends BaseEntity {
   @Column("email")
   private String email;
@@ -25,4 +25,12 @@ public class User extends BaseEntity {
 
   @Column("identify_document_information_id")
   private Long identifyDocumentInformationId;
+
+  public void addPersonalInformationId(Long personalInformationId) {
+    this.personalInformationId = personalInformationId;
+  }
+
+  public void addIdentifyDocumentInformationId(Long identifyDocumentInformationId) {
+    this.identifyDocumentInformationId = identifyDocumentInformationId;
+  }
 }

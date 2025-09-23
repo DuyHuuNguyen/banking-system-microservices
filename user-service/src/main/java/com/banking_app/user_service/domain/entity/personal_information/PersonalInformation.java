@@ -4,6 +4,7 @@ import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -12,6 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @Table("personal_information")
 public class PersonalInformation extends BaseEntity {
 
@@ -27,6 +29,10 @@ public class PersonalInformation extends BaseEntity {
   @Column("personal_photo")
   private String personalPhoto;
 
-  @Column("permanent_address_id")
-  private Long permanentAddressId;
+  @Column("user_location_detail_id")
+  private Long locationUserDetailId;
+
+  public void addLocationUserDetailId(Long locationUserDetailId) {
+    this.locationUserDetailId = locationUserDetailId;
+  }
 }

@@ -29,7 +29,12 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 public class SecurityConfig {
 
   private static final String[] WHITE_LISTS = {
-    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/api/v1/users/hehe"
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/actuator/**",
+    "/api/v1/users/hehe",
+    "/api/v1/users/sign-up"
   };
 
   @Bean

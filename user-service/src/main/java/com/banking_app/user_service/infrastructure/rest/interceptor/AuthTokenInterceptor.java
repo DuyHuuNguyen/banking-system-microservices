@@ -31,7 +31,8 @@ public class AuthTokenInterceptor implements WebFilter {
 
   private final int TIMEOUT_RANGE = 3;
 
-  private final List<String> PUBLIC_APIS = List.of("/actuator/", "/api/v1/users/hehe");
+  private final List<String> PUBLIC_APIS =
+      List.of("/actuator/", "/api/v1/users/hehe", "/api/v1/users/sign-up");
   private final List<String> SWAGGER_URLS =
       List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs", "/favicon.ico");
 

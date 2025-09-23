@@ -2,6 +2,7 @@ package com.banking_app.user_service.domain.entity.document_location_detail;
 
 import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -15,14 +16,15 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("document_location_details")
 public class DocumentLocationDetail extends BaseEntity {
 
-  @Column("country")
+  @Column("contry")
   private String country;
 
   @Column("province")
   private String province;
 
   @Column("district")
-  private String district;
+  @Builder.Default
+  private String district = "null moe r";
 
   @Column("ward")
   private String ward;
@@ -30,6 +32,6 @@ public class DocumentLocationDetail extends BaseEntity {
   @Column("street")
   private String street;
 
-  @Column("homes_number")
+  @Column("home_number")
   private String homesNumber;
 }

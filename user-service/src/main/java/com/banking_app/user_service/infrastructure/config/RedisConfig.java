@@ -1,5 +1,6 @@
 package com.banking_app.user_service.infrastructure.config;
 
+import com.banking_app.user_service.domain.entity.user.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -11,16 +12,31 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 public class RedisConfig {
 
   @Bean
-  public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
+  public ReactiveRedisTemplate<Long, User> reactiveRedisTemplate(
       ReactiveRedisConnectionFactory factory) {
-    Jackson2JsonRedisSerializer<Object> serializer =
-        new Jackson2JsonRedisSerializer<>(Object.class);
+    Jackson2JsonRedisSerializer<User> serializer = new Jackson2JsonRedisSerializer<>(User.class);
 
-    RedisSerializationContext.RedisSerializationContextBuilder<String, Object> builder =
+    RedisSerializationContext.RedisSerializationContextBuilder<Long, User> builder =
         RedisSerializationContext.newSerializationContext(serializer);
 
-    RedisSerializationContext<String, Object> context = builder.build();
+    RedisSerializationContext<Long, User> context = builder.build();
 
     return new ReactiveRedisTemplate<>(factory, context);
   }
+
+  //  @Bean
+  //  public ReactiveRedisTemplate<String, User> reactiveRedisTemplate(
+  //          ReactiveRedisConnectionFactory connectionFactory) {
+  //
+  //    StringRedisSerializer keySerializer = new StringRedisSerializer();
+  //    Jackson2JsonRedisSerializer<User> valueSerializer =
+  //            new Jackson2JsonRedisSerializer<>(User.class);
+  //
+  //    RedisSerializationContext<String, User> context = RedisSerializationContext
+  //            .<String, User>newSerializationContext(keySerializer)
+  //            .value(valueSerializer)
+  //            .build();
+  //
+  //    return new ReactiveRedisTemplate<>(connectionFactory, context);
+  //  }
 }

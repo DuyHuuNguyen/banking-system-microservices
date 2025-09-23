@@ -4,6 +4,7 @@ import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -12,6 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @Table("identity_document_information")
 public class IdentityDocumentInformation extends BaseEntity {
 
@@ -21,8 +23,8 @@ public class IdentityDocumentInformation extends BaseEntity {
   @Column("issued_at")
   private Long issuedAt;
 
-  @Column("issue_place")
-  private Long issuePlace;
+  @Column("location_issue_place_id")
+  private Long locationIssuePlaceId;
 
   @Column("citizen_id_front")
   private String citizenIdFront;
@@ -30,6 +32,10 @@ public class IdentityDocumentInformation extends BaseEntity {
   @Column("citizen_id_back")
   private String citizenIdBack;
 
-  @Column("document_location_detail_id")
-  private Long documentLocationDetailId;
+  //  @Column("document_location_detail_id")
+  //  private Long documentLocationDetailId;
+
+  public void addLocationIssuePlaceId(Long documentLocationDetailId) {
+    this.locationIssuePlaceId = documentLocationDetailId;
+  }
 }
