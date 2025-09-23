@@ -13,6 +13,7 @@ public enum ErrorCode {
   REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
   LOGGED_IN("Cancel login by policy"),
   PASSWORD_INCORRECT("Password incorrect"),
-  ;
+  USER_NOT_FOUND("User is not found"),
+  INFO_USER_INVALID("Info is invalid");
   private final String message;
 }

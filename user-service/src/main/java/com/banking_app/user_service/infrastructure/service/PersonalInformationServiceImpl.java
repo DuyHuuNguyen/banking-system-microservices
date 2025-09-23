@@ -16,4 +16,9 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
   public Mono<PersonalInformation> save(PersonalInformation personalInformation) {
     return this.personalInformationRepository.save(personalInformation);
   }
+
+  @Override
+  public Mono<PersonalInformation> findById(Long id) {
+    return this.personalInformationRepository.findById(id);
+  }
 }

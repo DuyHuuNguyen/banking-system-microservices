@@ -16,4 +16,9 @@ public class UserServiceImpl implements UserService {
   public Mono<User> save(User user) {
     return this.userRepository.save(user);
   }
+
+  @Override
+  public Mono<User> findById(Long id) {
+    return this.userRepository.findById(id);
+  }
 }

@@ -22,7 +22,8 @@ public class FilterConfig implements GlobalFilter {
           "/api/v1/auths/login",
           "/api/v1/auths/refresh-token",
           "/api/v1/auths/forgot-password",
-          "/api/v1/auths/sign-up");
+          "/api/v1/auths/sign-up",
+          "/api/v1/users/sign-up");
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
