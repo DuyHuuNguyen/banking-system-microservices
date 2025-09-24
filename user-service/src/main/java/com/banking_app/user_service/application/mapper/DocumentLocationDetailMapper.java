@@ -5,4 +5,6 @@ import com.banking_app.user_service.domain.entity.document_location_detail.Docum
 
 public interface DocumentLocationDetailMapper {
   DocumentLocationDetail toDocumentLocationDetail(LocationDTO locationDTO);
+
+  LocationDTO toDocumentLocationDetailDTO(DocumentLocationDetail documentLocationDetail);
 }

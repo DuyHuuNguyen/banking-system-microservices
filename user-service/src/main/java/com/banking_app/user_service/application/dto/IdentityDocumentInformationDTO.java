@@ -14,7 +14,7 @@ public class IdentityDocumentInformationDTO {
 
   private Long issuedAt;
 
-  private Long issuePlace;
+  private Long locationIssuePlaceId;
 
   private String citizenIdFront;
 

@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface DocumentLocationDetailService {
   Mono<DocumentLocationDetail> save(DocumentLocationDetail documentLocationDetail);
+
+  Mono<DocumentLocationDetail> findById(Long id);
 }

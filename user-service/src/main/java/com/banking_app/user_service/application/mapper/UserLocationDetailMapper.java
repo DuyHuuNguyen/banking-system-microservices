@@ -5,4 +5,6 @@ import com.banking_app.user_service.domain.entity.user_location_detail.UserLocat
 
 public interface UserLocationDetailMapper {
   UserLocationDetail toUserLocationDetail(LocationDTO locationDTO);
+
+  LocationDTO toUserLocationDetailDTO(UserLocationDetail userLocationDetail);
 }

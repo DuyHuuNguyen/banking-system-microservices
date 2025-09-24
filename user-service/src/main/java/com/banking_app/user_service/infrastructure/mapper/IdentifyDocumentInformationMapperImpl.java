@@ -15,7 +15,7 @@ public class IdentifyDocumentInformationMapperImpl implements IdentifyDocumentIn
         .personalIdentificationNumber(
             identityDocumentInformationDTO.getPersonalIdentificationNumber())
         .issuedAt(identityDocumentInformationDTO.getIssuedAt())
-        .locationIssuePlaceId(identityDocumentInformationDTO.getIssuePlace())
+        .locationIssuePlaceId(identityDocumentInformationDTO.getLocationIssuePlaceId())
         .citizenIdFront(identityDocumentInformationDTO.getCitizenIdFront())
         .citizenIdBack(identityDocumentInformationDTO.getCitizenIdFront())
         .build();
@@ -24,6 +24,12 @@ public class IdentifyDocumentInformationMapperImpl implements IdentifyDocumentIn
   @Override
   public IdentityDocumentInformationDTO toIdentityDocumentInformationDTO(
       IdentityDocumentInformation identityDocumentInformation) {
-    return null;
+    return IdentityDocumentInformationDTO.builder()
+        .personalIdentificationNumber(identityDocumentInformation.getPersonalIdentificationNumber())
+        .issuedAt(identityDocumentInformation.getIssuedAt())
+        .locationIssuePlaceId(identityDocumentInformation.getLocationIssuePlaceId())
+        .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
+        .citizenIdBack(identityDocumentInformation.getCitizenIdFront())
+        .build();
   }
 }

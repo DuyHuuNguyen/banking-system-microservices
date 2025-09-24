@@ -18,4 +18,16 @@ public class UserLocationDetailImpl implements UserLocationDetailMapper {
         .homesNumber(locationDTO.getHomesNumber())
         .build();
   }
+
+  @Override
+  public LocationDTO toUserLocationDetailDTO(UserLocationDetail userLocationDetail) {
+    return LocationDTO.builder()
+        .country(userLocationDetail.getCountry())
+        .province(userLocationDetail.getProvince())
+        .ward(userLocationDetail.getWard())
+        .street(userLocationDetail.getStreet())
+        .district(userLocationDetail.getDistrict())
+        .homesNumber(userLocationDetail.getHomesNumber())
+        .build();
+  }
 }

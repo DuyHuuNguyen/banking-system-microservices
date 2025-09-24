@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface UserLocationDetailService {
   Mono<UserLocationDetail> save(UserLocationDetail userLocationDetail);
+
+  Mono<UserLocationDetail> findById(Long id);
 }

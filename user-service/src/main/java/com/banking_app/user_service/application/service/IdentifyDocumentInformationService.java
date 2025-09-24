@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface IdentifyDocumentInformationService {
   Mono<IdentityDocumentInformation> save(IdentityDocumentInformation identityDocumentInformation);
+
+  Mono<IdentityDocumentInformation> findById(Long id);
 }

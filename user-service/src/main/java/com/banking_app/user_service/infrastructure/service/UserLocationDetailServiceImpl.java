@@ -16,4 +16,9 @@ public class UserLocationDetailServiceImpl implements UserLocationDetailService 
   public Mono<UserLocationDetail> save(UserLocationDetail userLocationDetail) {
     return this.userLocationDetailRepository.save(userLocationDetail);
   }
+
+  @Override
+  public Mono<UserLocationDetail> findById(Long id) {
+    return this.userLocationDetailRepository.findById(id);
+  }
 }

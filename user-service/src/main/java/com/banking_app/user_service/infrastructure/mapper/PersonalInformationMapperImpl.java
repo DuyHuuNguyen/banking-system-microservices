@@ -16,4 +16,14 @@ public class PersonalInformationMapperImpl implements PersonalInformationMapper 
         .personalPhoto(personalInformationDTO.getPersonalPhoto())
         .build();
   }
+
+  @Override
+  public PersonalInformationDTO toPersonalInformationDTO(PersonalInformation personalInformation) {
+    return PersonalInformationDTO.builder()
+        .fullName(personalInformation.getFullName())
+        .dateOfBirth(personalInformation.getDateOfBirth())
+        .sex(personalInformation.getSex())
+        .personalPhoto(personalInformation.getPersonalPhoto())
+        .build();
+  }
 }

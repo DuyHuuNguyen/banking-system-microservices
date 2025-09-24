@@ -18,4 +18,16 @@ public class DocumentLocationDetailMapperImpl implements DocumentLocationDetailM
         .homesNumber(locationDTO.getHomesNumber())
         .build();
   }
+
+  @Override
+  public LocationDTO toDocumentLocationDetailDTO(DocumentLocationDetail documentLocationDetail) {
+    return LocationDTO.builder()
+        .country(documentLocationDetail.getCountry())
+        .province(documentLocationDetail.getProvince())
+        .ward(documentLocationDetail.getWard())
+        .street(documentLocationDetail.getStreet())
+        .district(documentLocationDetail.getDistrict())
+        .homesNumber(documentLocationDetail.getHomesNumber())
+        .build();
+  }
 }

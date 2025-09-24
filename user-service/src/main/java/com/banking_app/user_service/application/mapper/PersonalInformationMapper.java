@@ -5,4 +5,6 @@ import com.banking_app.user_service.domain.entity.personal_information.PersonalI
 
 public interface PersonalInformationMapper {
   PersonalInformation toPersonalInformation(PersonalInformationDTO personalInformationDTO);
+
+  PersonalInformationDTO toPersonalInformationDTO(PersonalInformation personalInformation);
 }

@@ -3,6 +3,7 @@ package com.banking_app.user_service.infrastructure.rest.controller;
 import com.banking_app.user_service.api.facade.UserFacade;
 import com.banking_app.user_service.api.request.UpsertUserRequest;
 import com.banking_app.user_service.api.response.ProfileResponse;
+import com.banking_app.user_service.api.response.UserDetailResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,8 +31,18 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(tags = {"Users APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<ProfileResponse>> getProfile() {
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<ProfileResponse>> findProfile() {
     return this.userFacade.getProfile();
+  }
+
+  @GetMapping("/detail/{id}")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Operation(tags = {"Users APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<UserDetailResponse>> findDetailById(@PathVariable Long id) {
+    return this.userFacade.findDetailById(id);
   }
 
   @GetMapping("/demo")

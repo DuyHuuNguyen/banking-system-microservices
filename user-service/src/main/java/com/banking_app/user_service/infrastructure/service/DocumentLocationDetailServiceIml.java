@@ -17,6 +17,11 @@ public class DocumentLocationDetailServiceIml implements DocumentLocationDetailS
     return this.documentLocationDetailRepository.save(documentLocationDetail);
   }
 
+  @Override
+  public Mono<DocumentLocationDetail> findById(Long id) {
+    return this.documentLocationDetailRepository.findById(id);
+  }
+
   //  @PostConstruct
   //  void run(){
   //    var documentLocationDetail = DocumentLocationDetail.builder()
