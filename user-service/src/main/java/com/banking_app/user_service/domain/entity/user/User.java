@@ -1,5 +1,6 @@
 package com.banking_app.user_service.domain.entity.user;
 
+import com.banking_app.user_service.application.dto.UserDTO;
 import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,10 @@ public class User extends BaseEntity {
 
   public void addIdentifyDocumentInformationId(Long identifyDocumentInformationId) {
     this.identifyDocumentInformationId = identifyDocumentInformationId;
+  }
+
+  public void updateInfo(UserDTO userDTO) {
+    this.phone = userDTO.getPhone();
+    this.email = userDTO.getEmail();
   }
 }

@@ -2,7 +2,6 @@ package com.banking_app.user_service.domain.entity.document_location_detail;
 
 import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,8 +22,7 @@ public class DocumentLocationDetail extends BaseEntity {
   private String province;
 
   @Column("district")
-  @Builder.Default
-  private String district = "null moe r";
+  private String district;
 
   @Column("ward")
   private String ward;

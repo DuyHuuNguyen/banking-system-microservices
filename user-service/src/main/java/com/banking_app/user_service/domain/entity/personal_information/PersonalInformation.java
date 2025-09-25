@@ -1,5 +1,6 @@
 package com.banking_app.user_service.domain.entity.personal_information;
 
+import com.banking_app.user_service.application.dto.PersonalInformationDTO;
 import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,5 +35,12 @@ public class PersonalInformation extends BaseEntity {
 
   public void addLocationUserDetailId(Long locationUserDetailId) {
     this.locationUserDetailId = locationUserDetailId;
+  }
+
+  public void updateInfo(PersonalInformationDTO personalInformationDTO) {
+    this.fullName = personalInformationDTO.getFullName();
+    this.dateOfBirth = personalInformationDTO.getDateOfBirth();
+    this.sex = personalInformationDTO.getSex();
+    this.personalPhoto = personalInformationDTO.getPersonalPhoto();
   }
 }

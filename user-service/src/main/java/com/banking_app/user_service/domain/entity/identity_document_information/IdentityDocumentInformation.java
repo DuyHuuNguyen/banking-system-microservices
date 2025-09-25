@@ -1,5 +1,6 @@
 package com.banking_app.user_service.domain.entity.identity_document_information;
 
+import com.banking_app.user_service.application.dto.IdentityDocumentInformationDTO;
 import com.banking_app.user_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,10 +33,15 @@ public class IdentityDocumentInformation extends BaseEntity {
   @Column("citizen_id_back")
   private String citizenIdBack;
 
-  //  @Column("document_location_detail_id")
-  //  private Long documentLocationDetailId;
-
   public void addLocationIssuePlaceId(Long documentLocationDetailId) {
     this.locationIssuePlaceId = documentLocationDetailId;
+  }
+
+  public void updateInfo(IdentityDocumentInformationDTO identityDocumentInformationDTO) {
+    this.personalIdentificationNumber =
+        identityDocumentInformationDTO.getPersonalIdentificationNumber();
+    this.issuedAt = identityDocumentInformationDTO.getIssuedAt();
+    this.citizenIdBack = identityDocumentInformationDTO.getCitizenIdBack();
+    this.citizenIdFront = identityDocumentInformationDTO.getCitizenIdFront();
   }
 }

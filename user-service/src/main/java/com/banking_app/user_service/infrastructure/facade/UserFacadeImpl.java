@@ -1,7 +1,8 @@
 package com.banking_app.user_service.infrastructure.facade;
 
 import com.banking_app.user_service.api.facade.UserFacade;
-import com.banking_app.user_service.api.request.UpsertUserRequest;
+import com.banking_app.user_service.api.request.CreateUserRequest;
+import com.banking_app.user_service.api.request.UpdateUserRequest;
 import com.banking_app.user_service.api.response.ProfileResponse;
 import com.banking_app.user_service.api.response.UserDetailResponse;
 import com.banking_app.user_service.application.dto.IdentifyDocumentInformationWithLocationDTO;
@@ -46,7 +47,7 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   @Transactional
-  public Mono<BaseResponse<Void>> signUp(UpsertUserRequest upsertUserRequest) {
+  public Mono<BaseResponse<Void>> signUp(CreateUserRequest upsertUserRequest) {
     var user =
         User.builder()
             .email(upsertUserRequest.getUserDTO().getEmail())
@@ -181,6 +182,46 @@ public class UserFacadeImpl implements UserFacade {
 
               return Mono.fromFuture(completableFuture);
             });
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> updateUser(UpdateUserRequest updateUserRequest) {
+    return this.userService
+        .findById(updateUserRequest.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
+        .flatMap(
+            user -> {
+              var identityDocumentInformationMono =
+                  this.identifyDocumentInformationService
+                      .findById(user.getIdentifyDocumentInformationId())
+                      .switchIfEmpty(
+                          Mono.error(
+                              new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)));
+              var personalInformationMono =
+                  this.personalInformationService
+                      .findById(user.getPersonalInformationId())
+                      .switchIfEmpty(
+                          Mono.error(
+                              new EntityNotFoundException(
+                                  ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)));
+
+              return Mono.zip(identityDocumentInformationMono, personalInformationMono)
+                  .flatMap(
+                      tuple -> {
+                        var identifyDocumentInfo = tuple.getT1();
+                        identifyDocumentInfo.updateInfo(
+                            updateUserRequest.getIdentityDocumentInformationDTO());
+                        var personalInfo = tuple.getT2();
+                        personalInfo.updateInfo(updateUserRequest.getPersonalInformationDTO());
+                        user.updateInfo(updateUserRequest.getUserDTO());
+                        return Mono.when(
+                            this.userService.save(user),
+                            this.identifyDocumentInformationService.save(identifyDocumentInfo),
+                            this.personalInformationService.save(personalInfo));
+                      });
+            })
+        .then(Mono.fromCallable(BaseResponse::ok));
   }
 
   private CompletableFuture<PersonalInformationWithLocationDTO> buildPersonalInformationFuture(
