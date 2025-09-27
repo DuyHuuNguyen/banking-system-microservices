@@ -43,7 +43,13 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Mono<Account> save(Account account) {
+    account.reUpdate();
     return this.accountRepository.save(account);
+  }
+
+  @Override
+  public Mono<Account> findByUserId(Long userId) {
+    return this.accountRepository.findByUserId(userId);
   }
 
   @Override

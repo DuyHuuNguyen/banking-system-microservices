@@ -56,11 +56,4 @@ public class UserController {
     upsertUserRequest.withId(id);
     return this.userFacade.updateUser(upsertUserRequest);
   }
-
-  @GetMapping("/demo")
-  @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public Mono<BaseResponse<Void>> ok(@RequestParam String hehe) {
-    return Mono.just(BaseResponse.ok());
-  }
 }

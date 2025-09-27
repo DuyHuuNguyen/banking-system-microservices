@@ -4,7 +4,7 @@ CREATE TABLE "users"
     "email"                             varchar               NOT NULL,
     "phone"                             varchar               NOT NULL,
     "personal_information_id"           bigint,
-    "identify_documnent_information_id" bigint,
+    "identify_document_information_id" bigint,
     "is_active"                         boolean               NOT NULL DEFAULT true,
     "version"                           bigint                NOT NULL DEFAULT 0,
     "created_at"                        bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,

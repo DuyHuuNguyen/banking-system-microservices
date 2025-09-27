@@ -25,4 +25,7 @@ public interface AccountRepository extends ReactiveCrudRepository<Account, Long>
   WHERE acc.personal_identification_number =:personalId
   """)
   Mono<Void>  updateFirstLoginAndOneDeviceByPersonalIdentificationNumber(String personalId, Boolean isFirstLogin, Boolean isOneDevice);
+
+
+  Mono<Account> findByUserId(Long userId);
 }

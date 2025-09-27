@@ -18,6 +18,7 @@ import com.banking_app.user_service.domain.entity.personal_information.PersonalI
 import com.banking_app.user_service.domain.entity.user.User;
 import com.banking_app.user_service.infrastructure.security.SecurityUserDetails;
 import com.example.base.BaseResponse;
+import com.example.dto.UpdatingAccountMessage;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
 import com.example.exception.PermissionDeniedException;
@@ -39,6 +40,7 @@ public class UserFacadeImpl implements UserFacade {
   private final DocumentLocationDetailService documentLocationDetailService;
   private final PersonalInformationService personalInformationService;
   private final UserLocationDetailService userLocationDetailService;
+  private final ProducerMessageUpdateAccountService producerMessageUpdateAccountService;
 
   private final IdentifyDocumentInformationMapper identifyDocumentInformationMapper;
   private final PersonalInformationMapper personalInformationMapper;
@@ -60,36 +62,15 @@ public class UserFacadeImpl implements UserFacade {
         this.identifyDocumentInformationMapper.toIdentityDocumentInformation(
             upsertUserRequest.getIdentityDocumentInformationDTO());
 
-    var documentLocationDetail =
-        this.documentLocationDetailMapper.toDocumentLocationDetail(
-            upsertUserRequest.getLocationOfPersonalInformationDTO());
-
     var personalInformation =
         this.personalInformationMapper.toPersonalInformation(
             upsertUserRequest.getPersonalInformationDTO());
 
-    var userLocationDetail =
-        this.userLocationDetailMapper.toUserLocationDetail(
-            upsertUserRequest.getLocationOfPersonalInformationDTO());
-
     Mono<IdentityDocumentInformation> identityDocumentInformationMono =
-        this.documentLocationDetailService
-            .save(documentLocationDetail)
-            .flatMap(
-                createdDocumentLocationDetail -> {
-                  identifyDocumentInformation.addLocationIssuePlaceId(
-                      createdDocumentLocationDetail.getId());
-                  return this.identifyDocumentInformationService.save(identifyDocumentInformation);
-                });
+        this.identifyDocumentInformationService.save(identifyDocumentInformation);
 
     Mono<PersonalInformation> personalInformationMono =
-        this.userLocationDetailService
-            .save(userLocationDetail)
-            .flatMap(
-                createdUserLocationDetail -> {
-                  personalInformation.addLocationUserDetailId(createdUserLocationDetail.getId());
-                  return this.personalInformationService.save(personalInformation);
-                });
+        this.personalInformationService.save(personalInformation);
 
     return Mono.zip(identityDocumentInformationMono, personalInformationMono)
         .onErrorMap(exception -> new PermissionDeniedException(ErrorCode.JWT_INVALID))
@@ -215,10 +196,24 @@ public class UserFacadeImpl implements UserFacade {
                         var personalInfo = tuple.getT2();
                         personalInfo.updateInfo(updateUserRequest.getPersonalInformationDTO());
                         user.updateInfo(updateUserRequest.getUserDTO());
+
+                        var updatingAccountMessage =
+                            UpdatingAccountMessage.builder()
+                                .userId(user.getId())
+                                .personalId(
+                                    updateUserRequest
+                                        .getIdentityDocumentInformationDTO()
+                                        .getPersonalIdentificationNumber())
+                                .email(user.getEmail())
+                                .build();
                         return Mono.when(
                             this.userService.save(user),
                             this.identifyDocumentInformationService.save(identifyDocumentInfo),
-                            this.personalInformationService.save(personalInfo));
+                            this.personalInformationService.save(personalInfo),
+                            Mono.fromRunnable(
+                                () ->
+                                    this.producerMessageUpdateAccountService.updateInfoAccount(
+                                        updatingAccountMessage)));
                       });
             })
         .then(Mono.fromCallable(BaseResponse::ok));

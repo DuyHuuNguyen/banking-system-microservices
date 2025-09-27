@@ -26,8 +26,6 @@ public class AuthServiceGrpcImpl extends AuthTokenServiceGrpc.AuthTokenServiceIm
   private final AccountRoleService accountRoleService;
   private final RoleService roleService;
 
-  //    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
   @Override
   public void parseToken(
       AccessTokenRequest request, StreamObserver<AuthResponse> responseObserver) {

@@ -14,6 +14,16 @@ spring:
       host: localhost
       port: 6379
       database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+---
+rabbitmq:
+  exchange-updating-account: update-account
+  routing-key-update-account: update-account-router
+  queue-update-account : update-account-queue
 ---
 spring:
     banner:

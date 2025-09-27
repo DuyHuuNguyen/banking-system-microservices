@@ -46,6 +46,14 @@ public class Account extends BaseEntity {
     this.userId = accountDTO.getUserId();
   }
 
+  public void changePersonalId(String personalIdentificationNumber) {
+    this.personalIdentificationNumber = personalIdentificationNumber;
+  }
+
+  public void changeEmail(String email) {
+    this.email = email;
+  }
+
   public void updateOtp(String opt) {
     this.otp = opt;
   }
