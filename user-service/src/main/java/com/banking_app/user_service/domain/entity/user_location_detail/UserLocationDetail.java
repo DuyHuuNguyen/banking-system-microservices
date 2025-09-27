@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("use_location_details")
+@Table("user_location_details")
 public class UserLocationDetail extends BaseEntity {
 
   @Column("country")
@@ -30,6 +30,6 @@ public class UserLocationDetail extends BaseEntity {
   @Column("street")
   private String street;
 
-  @Column("homes_number")
+  @Column("home_number")
   private String homesNumber;
 }

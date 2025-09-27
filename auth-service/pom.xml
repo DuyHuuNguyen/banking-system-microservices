@@ -41,72 +41,26 @@
 	</repositories>
 
 	<dependencies>
-		<!-- Micrometer - Vendor-neutral application observability facade. Instrument your JVM-based application code without vendor lock-in.  Observation (Metrics & Logs) + Tracing.-->
-
-<!--		<dependency>-->
-<!--			<groupId>io.micrometer</groupId>-->
-<!--			<artifactId>micrometer-observation</artifactId>-->
-<!--		</dependency>-->
-
-		<!-- Brave as Bridge -->
-
-		<!--
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-tracing-bridge-brave</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>io.zipkin.reporter2</groupId
-			<artifactId>zipkin-reporter-brave</artifactId>
-		</dependency>
-		-->
-
-		<!-- Open Telemetry as Bridge -->
-		<!-- Open Telemetry - Simplified Observability (metrics, logs, and traces) -->
-
-<!--		<dependency>-->
-<!--			<groupId>io.micrometer</groupId>-->
-<!--			<artifactId>micrometer-tracing-bridge-otel</artifactId>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>io.opentelemetry</groupId>-->
-<!--			<artifactId>opentelemetry-exporter-zipkin</artifactId>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-sleuth</artifactId>-->
-<!--			<version>3.1.11</version>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-sleuth-zipkin</artifactId>-->
-<!--			<version>3.1.11</version>-->
-<!--		</dependency>-->
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.splunk.logging</groupId>
-			<artifactId>splunk-library-javalogging</artifactId>
-			<version>1.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>3.14.9</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.splunk.logging</groupId>-->
+<!--			<artifactId>splunk-library-javalogging</artifactId>-->
+<!--			<version>1.8.0</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.squareup.okhttp3</groupId>-->
+<!--			<artifactId>okhttp</artifactId>-->
+<!--			<version>3.14.9</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>common-dto</artifactId>
+			<artifactId>common-resources</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 
@@ -172,27 +126,6 @@
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>net.devh</groupId>-->
-<!--			<artifactId>grpc-spring-boot-starter</artifactId>-->
-<!--			<version>2.15.0.RELEASE</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>io.grpc</groupId>-->
-<!--			<artifactId>grpc-stub</artifactId>-->
-<!--			<version>${grpc.version}</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>io.grpc</groupId>-->
-<!--			<artifactId>grpc-protobuf</artifactId>-->
-<!--			<version>${grpc.version}</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>com.google.protobuf</groupId>-->
-<!--			<artifactId>protobuf-java</artifactId>-->
-<!--			<version>${protobuf.version}</version>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -206,11 +139,11 @@
 
 
 
-<!--		<dependency>-->
-<!--			<groupId>com.example</groupId>-->
-<!--			<artifactId>common-proto</artifactId>-->
-<!--			<version>1.0.0</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>common-proto</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -234,6 +167,14 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/net.devh/grpc-server-spring-boot-starter -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-starter</artifactId>
+			<version>3.1.0.RELEASE</version>
+		</dependency>
+
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -248,23 +189,8 @@
 	</dependencyManagement>
 
 	<build>
-		<extensions>
-			<extension>
-				<groupId>kr.motd.maven</groupId>
-				<artifactId>os-maven-plugin</artifactId>
-				<version>1.7.1</version>
-			</extension>
-		</extensions>
+
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
-				<configuration>
-					<source>17</source>
-					<target>17</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -276,24 +202,6 @@
 						</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.xolstice.maven.plugins</groupId>
-				<artifactId>protobuf-maven-plugin</artifactId>
-				<version>0.6.1</version>
-				<configuration>
-					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
-					<pluginId>grpc-java</pluginId>
-					<pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>compile-custom</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

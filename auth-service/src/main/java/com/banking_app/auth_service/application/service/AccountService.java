@@ -18,4 +18,6 @@ public interface AccountService {
   Mono<Account> save(Account account);
 
   Flux<Account> findAll(AccountSpecification accountSpecification);
+
+  Mono<Account> findByUserId(Long userId);
 }

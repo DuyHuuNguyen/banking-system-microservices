@@ -31,6 +31,8 @@ spring:
           initial-interval: 1000ms
           multiplier: 2.0
           max-interval: 10000ms
+        acknowledge-mode: auto
+
 ---
 eureka:
   client:
@@ -63,6 +65,9 @@ rabbitmq:
   exchangeName: banking-demo
   user-mail-routing-key: banking-demo
   user-mail-queue: banking-otp-queue
+  exchange-updating-account: update-account
+  routing-key-update-account: update-account-router
+  queue-update-account : update-account-queue
 ---
 management:
   tracing:
@@ -93,4 +98,7 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-
+---
+grpc:
+  server:
+    port: 9090

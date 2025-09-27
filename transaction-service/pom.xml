@@ -83,7 +83,7 @@
 
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>common-dto</artifactId>
+			<artifactId>common-resources</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 

@@ -30,6 +30,7 @@ public class BaseEntity {
   private Long updatedAt = Instant.now().toEpochMilli();;
 
   public void reUpdate() {
+    if (this.id != null) version++;
     this.updatedAt = Instant.now().toEpochMilli();
   }
 

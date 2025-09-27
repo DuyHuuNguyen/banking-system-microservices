@@ -25,6 +25,7 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   public Mono<Role> save(Role role) {
+    role.reUpdate();
     return this.roleRepository.save(role);
   }
 

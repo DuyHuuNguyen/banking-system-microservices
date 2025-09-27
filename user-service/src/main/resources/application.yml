@@ -2,7 +2,7 @@ spring:
   application:
     name: user-service
 server:
-  port: 8080
+  port: 8180
 ---
 spring:
   r2dbc:
@@ -14,9 +14,25 @@ spring:
       host: localhost
       port: 6379
       database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+---
+rabbitmq:
+  exchange-updating-account: update-account
+  routing-key-update-account: update-account-router
+  queue-update-account : update-account-queue
 ---
 spring:
     banner:
       location: file:./banner.txt
 logging:
   config: classpath:log4j2-spring.xml
+---
+grpc:
+  client:
+    hello:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext

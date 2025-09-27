@@ -4,7 +4,7 @@ CREATE TABLE "users"
     "email"                             varchar               NOT NULL,
     "phone"                             varchar               NOT NULL,
     "personal_information_id"           bigint,
-    "identify_documnent_information_id" bigint,
+    "identify_document_information_id" bigint,
     "is_active"                         boolean               NOT NULL DEFAULT true,
     "version"                           bigint                NOT NULL DEFAULT 0,
     "created_at"                        bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,
@@ -32,7 +32,7 @@ CREATE TABLE "identity_document_information"
     "issued_at"                      bigint                NOT NULL,
     "issue_place"                    bigint,
     "citizen_id_front"               varchar               NOT NULL,
-    "citzen_id_back"                 varchar               NOT NULL,
+    "citizen_id_back"                 varchar               NOT NULL,
     "is_active"                      boolean               NOT NULL DEFAULT true,
     "version"                        bigint                NOT NULL DEFAULT 0,
     "created_at"                     bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,
@@ -42,7 +42,7 @@ CREATE TABLE "identity_document_information"
 CREATE TABLE "user_location_details"
 (
     "id"           BIGSERIAL PRIMARY KEY NOT NULL,
-    "contry"       varchar[100] NOT NULL,
+    "country"       varchar[100] NOT NULL,
     "province"     varchar[100] NOT NULL,
     "district"     varchar[100] NOT NULL,
     "ward"         varchar[100] NOT NULL,

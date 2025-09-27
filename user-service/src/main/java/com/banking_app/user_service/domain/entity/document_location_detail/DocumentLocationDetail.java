@@ -15,7 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("document_location_details")
 public class DocumentLocationDetail extends BaseEntity {
 
-  @Column("country")
+  @Column("contry")
   private String country;
 
   @Column("province")
@@ -30,6 +30,6 @@ public class DocumentLocationDetail extends BaseEntity {
   @Column("street")
   private String street;
 
-  @Column("homes_number")
+  @Column("home_number")
   private String homesNumber;
 }
