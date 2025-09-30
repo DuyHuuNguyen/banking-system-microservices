@@ -127,46 +127,95 @@ public class UserFacadeImpl implements UserFacade {
             });
   }
 
-  @Override
   public Mono<BaseResponse<UserDetailResponse>> findDetailById(Long id) {
-
     return this.userService
         .findById(id)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
         .flatMap(
             user -> {
-              CompletableFuture<BaseResponse<UserDetailResponse>> completableFuture =
-                  this.buildPersonalInformationFuture(user)
-                      .thenCombine(
-                          this.buildIdentifyDocumentFuture(user),
-                          (personalInformationWithLocationDTO,
-                              identityInformationWithLocationDTO) -> {
-                            log.info("{}", personalInformationWithLocationDTO);
-                            log.info("{}", identityInformationWithLocationDTO);
+              var identityDocumentInformationCompletableFuture =
+                  this.findIdentityDocumentInfoWithLocation(
+                      user.getIdentifyDocumentInformationId());
 
-                            return BaseResponse.build(
-                                UserDetailResponse.builder()
-                                    .id(user.getId())
-                                    .userDTO(
-                                        UserDTO.builder()
-                                            .email(user.getEmail())
-                                            .phone(user.getPhone())
-                                            .build())
-                                    .personalInformationDTO(
-                                        personalInformationWithLocationDTO
-                                            .getPersonalInformationDTO())
-                                    .locationOfPersonalInformationDTO(
-                                        personalInformationWithLocationDTO.getLocationDTO())
-                                    .identityDocumentInformationDTO(
-                                        identityInformationWithLocationDTO
-                                            .getIdentityDocumentInformationDTO())
-                                    .locationOfIdentityDocumentInformationDTO(
-                                        identityInformationWithLocationDTO.getLocationDTO())
-                                    .build(),
-                                true);
+              var personalInformationCompletableFuture =
+                  this.findPersonalInformationWithLocation(user.getPersonalInformationId());
+
+              CompletableFuture<UserDetailResponse> combined =
+                  CompletableFuture.allOf(
+                          identityDocumentInformationCompletableFuture,
+                          personalInformationCompletableFuture)
+                      .thenApply(
+                          v -> {
+                            var identifyDocumentInformationWithLocationDTO = identityDocumentInformationCompletableFuture.join();
+                            var personalInformationWithLocationDTO = personalInformationCompletableFuture.join();
+                            return UserDetailResponse.builder()
+                                .id(user.getId())
+                                .userDTO(
+                                    UserDTO.builder()
+                                        .email(user.getEmail())
+                                        .phone(user.getPhone())
+                                        .build())
+                                .personalInformationDTO(
+                                    personalInformationWithLocationDTO.getPersonalInformationDTO())
+                                .locationOfPersonalInformationDTO(
+                                    personalInformationWithLocationDTO.getLocationDTO())
+                                .identityDocumentInformationDTO(
+                                    identifyDocumentInformationWithLocationDTO
+                                        .getIdentityDocumentInformationDTO())
+                                .locationOfIdentityDocumentInformationDTO(
+                                    identifyDocumentInformationWithLocationDTO.getLocationDTO())
+                                .build();
                           });
-
-              return Mono.fromFuture(completableFuture);
+              return Mono.fromFuture(combined)
+                  .map(userDetailResponse -> BaseResponse.build(userDetailResponse, true));
             });
+  }
+
+  public CompletableFuture<PersonalInformationWithLocationDTO> findPersonalInformationWithLocation(
+      Long personalInformationId) {
+    return personalInformationService
+        .findById(personalInformationId)
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)))
+        .map(personalInformationMapper::toPersonalInformationDTO)
+        .flatMap(
+            personalInformationDTO ->
+                userLocationDetailService
+                    .findById(personalInformationDTO.getLocationUserDetailId())
+                    .switchIfEmpty(
+                        Mono.error(
+                            new EntityNotFoundException(ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)))
+                    .map(userLocationDetailMapper::toUserLocationDetailDTO)
+                    .map(
+                        userLocationDetailDTO ->
+                            PersonalInformationWithLocationDTO.builder()
+                                .personalInformationDTO(personalInformationDTO)
+                                .locationDTO(userLocationDetailDTO)
+                                .build()))
+        .toFuture();
+  }
+
+  public CompletableFuture<IdentifyDocumentInformationWithLocationDTO>
+      findIdentityDocumentInfoWithLocation(Long identifyDocumentInformationId) {
+    return identifyDocumentInformationService
+        .findById(identifyDocumentInformationId)
+        .map(identifyDocumentInformationMapper::toIdentityDocumentInformationDTO)
+        .flatMap(
+            identityDocumentInformationDTO ->
+                documentLocationDetailService
+                    .findById(identityDocumentInformationDTO.getLocationIssuePlaceId())
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+                    .map(documentLocationDetailMapper::toDocumentLocationDetailDTO)
+                    .map(
+                        locationIssuePlaceDTO ->
+                            IdentifyDocumentInformationWithLocationDTO.builder()
+                                .identityDocumentInformationDTO(identityDocumentInformationDTO)
+                                .locationDTO(locationIssuePlaceDTO)
+                                .build()))
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+        .toFuture();
   }
 
   @Override
@@ -226,7 +275,8 @@ public class UserFacadeImpl implements UserFacade {
   @Override
   public Mono<BaseResponse<PaginationResponse<ProfileResponse>>> findByFilter(
       UserCriteria userCriteria) {
-    UserSpecification userSpecification = UserSpecification.builder()
+    UserSpecification userSpecification =
+        UserSpecification.builder()
             .pageNumber(userCriteria.getCurrentPage())
             .pageSize(userCriteria.getPageSize())
             .createdAtInMonth(userCriteria.getMonthCreatedAt())
@@ -235,30 +285,30 @@ public class UserFacadeImpl implements UserFacade {
             .build();
     return this.userService
         .findAll(userSpecification)
-            .parallel()
-            .runOn(Schedulers.boundedElastic())
-            .flatMap(user ->
-                    Mono.zip(
-                            Mono.just(user),
-                            this.personalInformationService.findById(user.getPersonalInformationId())
-                    )
-            )
-            .map(tuple -> {
-                var user = tuple.getT1();
-                var personalInformation = tuple.getT2();
-                log.info("thread after zip !");
-                return ProfileResponse.builder()
-                        .id(user.getId())
-                        .sex(personalInformation.getSex())
-                        .personalPhoto(personalInformation.getPersonalPhoto())
-                        .fullName(personalInformation.getFullName())
-                        .email(user.getEmail())
-                        .phone(user.getPhone())
-                        .build();
+        .parallel()
+        .runOn(Schedulers.boundedElastic())
+        .flatMap(
+            user ->
+                Mono.zip(
+                    Mono.just(user),
+                    this.personalInformationService.findById(user.getPersonalInformationId())))
+        .map(
+            tuple -> {
+              var user = tuple.getT1();
+              var personalInformation = tuple.getT2();
+              log.info("thread after zip !");
+              return ProfileResponse.builder()
+                  .id(user.getId())
+                  .sex(personalInformation.getSex())
+                  .personalPhoto(personalInformation.getPersonalPhoto())
+                  .fullName(personalInformation.getFullName())
+                  .email(user.getEmail())
+                  .phone(user.getPhone())
+                  .build();
             })
-            .sequential()
-            .collectList()
-            .flatMap(
+        .sequential()
+        .collectList()
+        .flatMap(
             profiles -> {
               return Mono.just(
                   BaseResponse.<PaginationResponse<ProfileResponse>>build(
@@ -269,84 +319,5 @@ public class UserFacadeImpl implements UserFacade {
                           .build(),
                       true));
             });
-
-  }
-
-  private CompletableFuture<PersonalInformationWithLocationDTO> buildPersonalInformationFuture(
-      User user) {
-    return CompletableFuture.supplyAsync(
-        () -> {
-          log.info(
-              "Start building PersonalInformationWithLocationDTO for userId: {}", user.getId());
-
-          return personalInformationService
-              .findById(user.getPersonalInformationId())
-              .switchIfEmpty(
-                  Mono.error(new EntityNotFoundException(ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)))
-              .flatMap(
-                  personalInformation ->
-                      userLocationDetailService
-                          .findById(personalInformation.getLocationUserDetailId())
-                          .switchIfEmpty(
-                              Mono.error(new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
-                          .map(
-                              location ->
-                                  PersonalInformationWithLocationDTO.builder()
-                                      .personalInformationDTO(
-                                          personalInformationMapper.toPersonalInformationDTO(
-                                              personalInformation))
-                                      .locationDTO(
-                                          userLocationDetailMapper.toUserLocationDetailDTO(
-                                              location))
-                                      .build()))
-              .onErrorMap(
-                  e -> {
-                    log.error(
-                        "Failed to build PersonalInformationWithLocationDTO: {}",
-                        e.getMessage(),
-                        e);
-                    return e;
-                  })
-              .blockOptional()
-              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND));
-        });
-  }
-
-  private CompletableFuture<IdentifyDocumentInformationWithLocationDTO> buildIdentifyDocumentFuture(
-      User user) {
-    return CompletableFuture.supplyAsync(
-        () -> {
-          log.info(
-              "Start building IdentifyDocumentInformationWithLocationDTO for userId: {}",
-              user.getId());
-
-          return identifyDocumentInformationService
-              .findById(user.getIdentifyDocumentInformationId())
-              .switchIfEmpty(
-                  Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
-              .flatMap(
-                  identityDoc ->
-                      documentLocationDetailService
-                          .findById(identityDoc.getLocationIssuePlaceId())
-                          .switchIfEmpty(
-                              Mono.error(new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
-                          .map(
-                              location ->
-                                  IdentifyDocumentInformationWithLocationDTO.builder()
-                                      .identityDocumentInformationDTO(
-                                          identifyDocumentInformationMapper
-                                              .toIdentityDocumentInformationDTO(identityDoc))
-                                      .locationDTO(
-                                          documentLocationDetailMapper.toDocumentLocationDetailDTO(
-                                              location))
-                                      .build()))
-              .onErrorMap(
-                  e -> {
-                    log.error("Failed to build DTO: {}", e.getMessage(), e);
-                    return e;
-                  })
-              .blockOptional()
-              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND));
-        });
   }
 }

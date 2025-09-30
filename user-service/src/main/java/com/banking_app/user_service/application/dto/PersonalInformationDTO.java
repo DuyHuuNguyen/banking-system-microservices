@@ -18,4 +18,6 @@ public class PersonalInformationDTO {
   private String sex;
 
   private String personalPhoto;
+
+  private Long locationUserDetailId;
 }

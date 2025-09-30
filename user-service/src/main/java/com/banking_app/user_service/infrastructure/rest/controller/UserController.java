@@ -44,7 +44,7 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(tags = {"Users APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
   public Mono<BaseResponse<UserDetailResponse>> findDetailById(@PathVariable Long id) {
     return this.userFacade.findDetailById(id);
   }
@@ -65,7 +65,8 @@ public class UserController {
   @Operation(tags = {"Users APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
-  public Mono<BaseResponse<PaginationResponse<ProfileResponse>>> findByFilter(@NotNull UserCriteria userCriteria){
+  public Mono<BaseResponse<PaginationResponse<ProfileResponse>>> findByFilter(
+      @NotNull UserCriteria userCriteria) {
     return this.userFacade.findByFilter(userCriteria);
   }
 }
