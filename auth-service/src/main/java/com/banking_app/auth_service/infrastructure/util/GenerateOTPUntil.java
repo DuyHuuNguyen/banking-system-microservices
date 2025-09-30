@@ -1,4 +1,4 @@
-package com.banking_app.auth_service.infrastructure.until;
+package com.banking_app.auth_service.infrastructure.util;
 
 import java.util.Random;
 

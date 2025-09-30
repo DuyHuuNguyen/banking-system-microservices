@@ -3,6 +3,7 @@ package com.banking_app.user_service.infrastructure.facade;
 import com.banking_app.user_service.api.facade.UserFacade;
 import com.banking_app.user_service.api.request.CreateUserRequest;
 import com.banking_app.user_service.api.request.UpdateUserRequest;
+import com.banking_app.user_service.api.request.UserCriteria;
 import com.banking_app.user_service.api.response.ProfileResponse;
 import com.banking_app.user_service.api.response.UserDetailResponse;
 import com.banking_app.user_service.application.dto.IdentifyDocumentInformationWithLocationDTO;
@@ -17,7 +18,9 @@ import com.banking_app.user_service.domain.entity.identity_document_information.
 import com.banking_app.user_service.domain.entity.personal_information.PersonalInformation;
 import com.banking_app.user_service.domain.entity.user.User;
 import com.banking_app.user_service.infrastructure.security.SecurityUserDetails;
+import com.banking_app.user_service.infrastructure.util.UserSpecification;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import com.example.dto.UpdatingAccountMessage;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
@@ -30,6 +33,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Log4j2
 @Service
@@ -217,6 +221,55 @@ public class UserFacadeImpl implements UserFacade {
                       });
             })
         .then(Mono.fromCallable(BaseResponse::ok));
+  }
+
+  @Override
+  public Mono<BaseResponse<PaginationResponse<ProfileResponse>>> findByFilter(
+      UserCriteria userCriteria) {
+    UserSpecification userSpecification = UserSpecification.builder()
+            .pageNumber(userCriteria.getCurrentPage())
+            .pageSize(userCriteria.getPageSize())
+            .createdAtInMonth(userCriteria.getMonthCreatedAt())
+            .createdAt(userCriteria.getCreatedAt())
+            .sex(userCriteria.getSex())
+            .build();
+    return this.userService
+        .findAll(userSpecification)
+            .parallel()
+            .runOn(Schedulers.boundedElastic())
+            .flatMap(user ->
+                    Mono.zip(
+                            Mono.just(user),
+                            this.personalInformationService.findById(user.getPersonalInformationId())
+                    )
+            )
+            .map(tuple -> {
+                var user = tuple.getT1();
+                var personalInformation = tuple.getT2();
+                log.info("thread after zip !");
+                return ProfileResponse.builder()
+                        .id(user.getId())
+                        .sex(personalInformation.getSex())
+                        .personalPhoto(personalInformation.getPersonalPhoto())
+                        .fullName(personalInformation.getFullName())
+                        .email(user.getEmail())
+                        .phone(user.getPhone())
+                        .build();
+            })
+            .sequential()
+            .collectList()
+            .flatMap(
+            profiles -> {
+              return Mono.just(
+                  BaseResponse.<PaginationResponse<ProfileResponse>>build(
+                      PaginationResponse.<ProfileResponse>builder()
+                          .data(profiles)
+                          .pageSize(userCriteria.getPageSize())
+                          .currentPage(userCriteria.getCurrentPage())
+                          .build(),
+                      true));
+            });
+
   }
 
   private CompletableFuture<PersonalInformationWithLocationDTO> buildPersonalInformationFuture(

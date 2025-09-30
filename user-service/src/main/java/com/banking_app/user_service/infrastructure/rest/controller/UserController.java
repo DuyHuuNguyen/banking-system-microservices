@@ -3,12 +3,15 @@ package com.banking_app.user_service.infrastructure.rest.controller;
 import com.banking_app.user_service.api.facade.UserFacade;
 import com.banking_app.user_service.api.request.CreateUserRequest;
 import com.banking_app.user_service.api.request.UpdateUserRequest;
+import com.banking_app.user_service.api.request.UserCriteria;
 import com.banking_app.user_service.api.response.ProfileResponse;
 import com.banking_app.user_service.api.response.UserDetailResponse;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,5 +58,14 @@ public class UserController {
       @PathVariable Long id, @RequestBody UpdateUserRequest upsertUserRequest) {
     upsertUserRequest.withId(id);
     return this.userFacade.updateUser(upsertUserRequest);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  @Operation(tags = {"Users APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<PaginationResponse<ProfileResponse>>> findByFilter(@NotNull UserCriteria userCriteria){
+    return this.userFacade.findByFilter(userCriteria);
   }
 }

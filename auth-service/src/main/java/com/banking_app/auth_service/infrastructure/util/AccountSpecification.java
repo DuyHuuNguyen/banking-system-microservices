@@ -1,4 +1,4 @@
-package com.banking_app.auth_service.infrastructure.until;
+package com.banking_app.auth_service.infrastructure.util;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
