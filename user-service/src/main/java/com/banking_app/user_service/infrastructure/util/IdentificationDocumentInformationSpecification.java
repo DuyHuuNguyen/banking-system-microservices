@@ -18,6 +18,10 @@ public class IdentificationDocumentInformationSpecification {
     this.query = Query.query(criteria).limit(pageSize).offset(offset);
   }
 
+  public static IdentificationDocumentInformationSpecificationBuilder builder() {
+    return new IdentificationDocumentInformationSpecificationBuilderImpl();
+  }
+
   public static class IdentificationDocumentInformationSpecificationBuilderImpl
       implements IdentificationDocumentInformationSpecificationBuilder {
     private Criteria criteria;
@@ -68,6 +72,14 @@ public class IdentificationDocumentInformationSpecification {
     public IdentificationDocumentInformationSpecificationBuilder pageSize(Integer pageSize) {
       if (pageSize == null) return this;
       this.pageSize = pageSize;
+      return this;
+    }
+
+    @Override
+    public IdentificationDocumentInformationSpecificationBuilder createdAtWithinRange(
+        Long from, Long to) {
+      if (from == null || to == null) return this;
+      this.criteria = this.criteria.and("created_at").between(from, to);
       return this;
     }
 

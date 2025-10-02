@@ -1,6 +1,5 @@
 package com.banking_app.user_service.infrastructure.util;
 
-
 public interface IdentificationDocumentInformationSpecificationBuilder {
 
   IdentificationDocumentInformationSpecificationBuilder createdAt(Long createdAt);
@@ -12,6 +11,8 @@ public interface IdentificationDocumentInformationSpecificationBuilder {
   IdentificationDocumentInformationSpecificationBuilder pageNumber(Integer pageNumber);
 
   IdentificationDocumentInformationSpecificationBuilder pageSize(Integer pageSize);
+
+  IdentificationDocumentInformationSpecificationBuilder createdAtWithinRange(Long from, Long to);
 
   IdentificationDocumentInformationSpecification build();
 }

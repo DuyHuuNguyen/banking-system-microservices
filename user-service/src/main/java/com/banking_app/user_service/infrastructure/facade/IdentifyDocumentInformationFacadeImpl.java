@@ -1,8 +1,10 @@
 package com.banking_app.user_service.infrastructure.facade;
 
 import com.banking_app.user_service.api.facade.IdentifyDocumentInformationFacade;
+import com.banking_app.user_service.api.request.IdentificationDocumentInfoCriteria;
 import com.banking_app.user_service.api.request.UpsertIdentificationDocumentInformationRequest;
 import com.banking_app.user_service.api.response.IdentificationDocumentDetailResponse;
+import com.banking_app.user_service.api.response.IdentityDocumentInformationResponse;
 import com.banking_app.user_service.application.dto.IdentityDocumentInformationDTO;
 import com.banking_app.user_service.application.dto.LocationDTO;
 import com.banking_app.user_service.application.service.DocumentLocationDetailService;
@@ -11,7 +13,9 @@ import com.banking_app.user_service.application.service.ProducerMessageUpdateAcc
 import com.banking_app.user_service.application.service.UserService;
 import com.banking_app.user_service.domain.entity.document_location_detail.DocumentLocationDetail;
 import com.banking_app.user_service.domain.entity.identity_document_information.IdentityDocumentInformation;
+import com.banking_app.user_service.infrastructure.util.IdentificationDocumentInformationSpecification;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import com.example.dto.UpdatingAccountMessage;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
@@ -118,6 +122,43 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
                     .map(
                         identityDocumentInformationDetailResponse ->
                             BaseResponse.build(identityDocumentInformationDetailResponse, true)));
+  }
+
+  @Override
+  public Mono<BaseResponse<PaginationResponse<IdentityDocumentInformationResponse>>> findByFilter(
+      IdentificationDocumentInfoCriteria identificationDocumentInfoCriteria) {
+    var withinDateRangeDTO = identificationDocumentInfoCriteria.getWithinDateRangeDTO();
+    var identificationDocumentInformationSpecification =
+        IdentificationDocumentInformationSpecification.builder()
+            .pageNumber(identificationDocumentInfoCriteria.getCurrentPage())
+            .pageSize(identificationDocumentInfoCriteria.getPageSize())
+            .createdAt(identificationDocumentInfoCriteria.getCreatedAt())
+            .issuedAt(identificationDocumentInfoCriteria.getIssuedAt())
+            .createdAtWithinRange(withinDateRangeDTO.getFrom(), withinDateRangeDTO.getTo())
+            .build();
+    return this.identifyDocumentInformationService
+        .findAll(identificationDocumentInformationSpecification)
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+        .map(
+            identityDocumentInformation ->
+                IdentityDocumentInformationResponse.builder()
+                    .id(identityDocumentInformation.getId())
+                    .personalId(identityDocumentInformation.getPersonalIdentificationNumber())
+                    .issuedAt(identityDocumentInformation.getIssuedAt())
+                    .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
+                    .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
+                    .locationIssuePlaceId(identityDocumentInformation.getLocationIssuePlaceId())
+                    .build())
+        .collectList()
+        .map(
+            identificationDocumentDetailResponses ->
+                PaginationResponse.<IdentityDocumentInformationResponse>builder()
+                    .data(identificationDocumentDetailResponses)
+                    .currentPage(identificationDocumentInfoCriteria.getCurrentPage())
+                    .pageSize(identificationDocumentInfoCriteria.getPageSize())
+                    .build())
+        .flatMap(paginationOfData -> Mono.just(BaseResponse.build(paginationOfData, true)));
   }
 
   private Mono<Object> sendMessageUpdateAccountService(
