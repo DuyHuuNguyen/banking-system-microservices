@@ -1,8 +1,6 @@
 package com.banking_app.user_service.api.request;
 
-import com.banking_app.user_service.application.dto.IdentityDocumentInformationDTO;
-import com.banking_app.user_service.application.dto.PersonalInformationDTO;
-import com.banking_app.user_service.application.dto.UserDTO;
+import com.banking_app.user_service.application.dto.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +14,14 @@ import lombok.NoArgsConstructor;
 public class UpdateUserRequest {
   private Long id;
   @NotNull private UserDTO userDTO;
-  @NotNull private IdentityDocumentInformationDTO identityDocumentInformationDTO;
-  @NotNull private PersonalInformationDTO personalInformationDTO;
+  @NotNull private IdentifyDocumentInformationWithLocationDTO identityDocumentInformationDTO;
+  @NotNull private PersonalInformationWithLocationDTO personalInformationWithLocationDTO;
 
   public void withId(Long id) {
     this.id = id;
+  }
+
+  public String getPersonalId() {
+    return this.identityDocumentInformationDTO.getPersonalId();
   }
 }

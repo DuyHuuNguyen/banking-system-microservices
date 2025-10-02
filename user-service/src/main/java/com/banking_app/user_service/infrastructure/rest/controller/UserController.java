@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 public class UserController {
   private final UserFacade userFacade;
 
-  @PostMapping("sign-up")
+  @PostMapping("/sign-up")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(tags = {"Users APIs"})
   public Mono<BaseResponse<Void>> signUp(@RequestBody @Valid CreateUserRequest upsertUserRequest) {
@@ -44,7 +44,7 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(tags = {"Users APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
-  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
   public Mono<BaseResponse<UserDetailResponse>> findDetailById(@PathVariable Long id) {
     return this.userFacade.findDetailById(id);
   }

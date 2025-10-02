@@ -14,9 +14,11 @@ import com.banking_app.user_service.application.mapper.IdentifyDocumentInformati
 import com.banking_app.user_service.application.mapper.PersonalInformationMapper;
 import com.banking_app.user_service.application.mapper.UserLocationDetailMapper;
 import com.banking_app.user_service.application.service.*;
+import com.banking_app.user_service.domain.entity.document_location_detail.DocumentLocationDetail;
 import com.banking_app.user_service.domain.entity.identity_document_information.IdentityDocumentInformation;
 import com.banking_app.user_service.domain.entity.personal_information.PersonalInformation;
 import com.banking_app.user_service.domain.entity.user.User;
+import com.banking_app.user_service.domain.entity.user_location_detail.UserLocationDetail;
 import com.banking_app.user_service.infrastructure.security.SecurityUserDetails;
 import com.banking_app.user_service.infrastructure.util.UserSpecification;
 import com.example.base.BaseResponse;
@@ -146,8 +148,10 @@ public class UserFacadeImpl implements UserFacade {
                           personalInformationCompletableFuture)
                       .thenApply(
                           v -> {
-                            var identifyDocumentInformationWithLocationDTO = identityDocumentInformationCompletableFuture.join();
-                            var personalInformationWithLocationDTO = personalInformationCompletableFuture.join();
+                            var identifyDocumentInformationWithLocationDTO =
+                                identityDocumentInformationCompletableFuture.join();
+                            var personalInformationWithLocationDTO =
+                                personalInformationCompletableFuture.join();
                             return UserDetailResponse.builder()
                                 .id(user.getId())
                                 .userDTO(
@@ -226,50 +230,90 @@ public class UserFacadeImpl implements UserFacade {
         .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
         .flatMap(
             user -> {
-              var identityDocumentInformationMono =
-                  this.identifyDocumentInformationService
-                      .findById(user.getIdentifyDocumentInformationId())
-                      .switchIfEmpty(
-                          Mono.error(
-                              new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)));
-              var personalInformationMono =
-                  this.personalInformationService
-                      .findById(user.getPersonalInformationId())
-                      .switchIfEmpty(
-                          Mono.error(
-                              new EntityNotFoundException(
-                                  ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)));
+              var updateAccountMessage =
+                  UpdatingAccountMessage.builder()
+                      .userId(user.getId())
+                      .personalId(updateUserRequest.getPersonalId())
+                      .email(user.getEmail())
+                      .build();
+              return Mono.when(
+                      this.updatePersonalInformationAndLocationById(
+                          user.getPersonalInformationId(),
+                          updateUserRequest.getPersonalInformationWithLocationDTO()),
+                      this.updateIdentifyDocumentInformationAndLocationById(
+                          user.getIdentifyDocumentInformationId(),
+                          updateUserRequest.getIdentityDocumentInformationDTO()))
+                  .doOnError(
+                      throwable -> {
+                        throw new PermissionDeniedException(ErrorCode.INFO_USER_INVALID);
+                      })
+                  .then(
+                      Mono.fromRunnable(
+                          () ->
+                              this.producerMessageUpdateAccountService.updateInfoAccount(
+                                  updateAccountMessage)))
+                  .then(Mono.fromCallable(BaseResponse::ok));
+            });
+  }
 
-              return Mono.zip(identityDocumentInformationMono, personalInformationMono)
+  private Mono<UserLocationDetail> updatePersonalInformationAndLocationById(
+      Long id, PersonalInformationWithLocationDTO personalInformationWithLocationDTO) {
+    return this.personalInformationService
+        .findById(id)
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)))
+        .flatMap(
+            personalInformation -> {
+              personalInformation.updateInfo(
+                  personalInformationWithLocationDTO.getPersonalInformationDTO());
+              return this.personalInformationService
+                  .save(personalInformation)
                   .flatMap(
-                      tuple -> {
-                        var identifyDocumentInfo = tuple.getT1();
-                        identifyDocumentInfo.updateInfo(
-                            updateUserRequest.getIdentityDocumentInformationDTO());
-                        var personalInfo = tuple.getT2();
-                        personalInfo.updateInfo(updateUserRequest.getPersonalInformationDTO());
-                        user.updateInfo(updateUserRequest.getUserDTO());
+                      personalInformationResponse ->
+                          this.userLocationDetailService
+                              .findById(personalInformation.getLocationUserDetailId())
+                              .switchIfEmpty(
+                                  Mono.error(
+                                      new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
+                              .flatMap(
+                                  userLocationDetail -> {
+                                    userLocationDetail.updateInfo(
+                                        personalInformationWithLocationDTO.getLocationDTO());
+                                    return this.userLocationDetailService.save(userLocationDetail);
+                                  }));
+            });
+  }
 
-                        var updatingAccountMessage =
-                            UpdatingAccountMessage.builder()
-                                .userId(user.getId())
-                                .personalId(
-                                    updateUserRequest
-                                        .getIdentityDocumentInformationDTO()
-                                        .getPersonalIdentificationNumber())
-                                .email(user.getEmail())
-                                .build();
-                        return Mono.when(
-                            this.userService.save(user),
-                            this.identifyDocumentInformationService.save(identifyDocumentInfo),
-                            this.personalInformationService.save(personalInfo),
-                            Mono.fromRunnable(
-                                () ->
-                                    this.producerMessageUpdateAccountService.updateInfoAccount(
-                                        updatingAccountMessage)));
-                      });
-            })
-        .then(Mono.fromCallable(BaseResponse::ok));
+  private Mono<DocumentLocationDetail> updateIdentifyDocumentInformationAndLocationById(
+      Long id,
+      IdentifyDocumentInformationWithLocationDTO identifyDocumentInformationWithLocationDTO) {
+    return this.identifyDocumentInformationService
+        .findById(id)
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+        .flatMap(
+            identityDocumentInformation -> {
+              identityDocumentInformation.updateInfo(
+                  identifyDocumentInformationWithLocationDTO.getIdentityDocumentInformationDTO());
+              return this.identifyDocumentInformationService
+                  .save(identityDocumentInformation)
+                  .flatMap(
+                      identityDocumentInformationResponse ->
+                          this.documentLocationDetailService
+                              .findById(
+                                  identityDocumentInformationResponse.getLocationIssuePlaceId())
+                              .switchIfEmpty(
+                                  Mono.error(
+                                      new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
+                              .flatMap(
+                                  documentLocationDetail -> {
+                                    documentLocationDetail.updateInfo(
+                                        identifyDocumentInformationWithLocationDTO
+                                            .getLocationDTO());
+                                    return this.documentLocationDetailService.save(
+                                        documentLocationDetail);
+                                  }));
+            });
   }
 
   @Override

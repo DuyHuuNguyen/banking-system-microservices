@@ -18,5 +18,6 @@ public enum ErrorCode {
   IDENTITY_DOCUMENT_NOT_FOUND("Identify document is not found"),
   LOCATION_NOT_FOUND("Location is not found"),
   PERSONAL_INFORMATION_NOT_FOUND("Personal information is not found");
+
   private final String message;
 }

@@ -12,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class IdentifyDocumentInformationWithLocationDTO {
   private IdentityDocumentInformationDTO identityDocumentInformationDTO;
   private LocationDTO locationDTO;
+
+  public String getPersonalId() {
+    return this.identityDocumentInformationDTO.getPersonalIdentificationNumber();
+  }
 }
