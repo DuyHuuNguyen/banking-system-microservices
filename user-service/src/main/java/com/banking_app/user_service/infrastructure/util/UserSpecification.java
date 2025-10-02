@@ -5,16 +5,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 
 @Log4j2
 @Getter
+@NoArgsConstructor
 public class UserSpecification {
   private Query query;
-
-  private UserSpecification() {}
 
   private UserSpecification(Criteria criteria, Integer pageSize, Integer offset) {
     this.query = Query.query(criteria).limit(pageSize).offset(offset);

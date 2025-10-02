@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class IdentificationDocumentDetailResponse {
-    private Long id;
-    private String personalId;
-    private Long issuedAt;
-    private String citizenIdFront;
-    private String citizenIdBack;
-    private Long locationIssuePlaceId;
-    private String country;
-    private String province;
-    private String district;
-    private String ward;
-    private String street;
-    private String homesNumber;
+  private Long id;
+  private String personalId;
+  private Long issuedAt;
+  private String citizenIdFront;
+  private String citizenIdBack;
+  private Long locationIssuePlaceId;
+  private String country;
+  private String province;
+  private String district;
+  private String ward;
+  private String street;
+  private String homesNumber;
 }

@@ -34,13 +34,14 @@ public class IdentificationDocumentInformationController {
     return this.identifyDocumentInformationFacade.updateIdentifyDocument(
         upsertIdentificationDocumentInformationRequest);
   }
+
   @GetMapping("/detail/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Identify-documents APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
-  public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(@PathVariable Long id){
+  public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(
+      @PathVariable Long id) {
     return this.identifyDocumentInformationFacade.findDetailById(id);
   }
-
 }

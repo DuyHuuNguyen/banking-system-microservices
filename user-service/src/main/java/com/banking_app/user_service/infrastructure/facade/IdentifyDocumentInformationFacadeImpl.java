@@ -87,27 +87,37 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
 
   @Override
   public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(Long id) {
-    return this.identifyDocumentInformationService.findById(id)
-            .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
-            .flatMap(identityDocumentInformation ->
-                    this.documentLocationDetailService.findById(identityDocumentInformation.getLocationIssuePlaceId())
-                            .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
-                            .map(documentLocationDetail -> IdentificationDocumentDetailResponse.builder()
-                                    .id(identityDocumentInformation.getId())
-                                    .personalId(identityDocumentInformation.getPersonalIdentificationNumber())
-                                    .issuedAt(identityDocumentInformation.getIssuedAt())
-                                    .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
-                                    .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
-                                    .locationIssuePlaceId(identityDocumentInformation.getLocationIssuePlaceId())
-                                    .country(documentLocationDetail.getCountry())
-                                    .province(documentLocationDetail.getProvince())
-                                    .district(documentLocationDetail.getDistrict())
-                                    .ward(documentLocationDetail.getWard())
-                                    .street(documentLocationDetail.getStreet())
-                                    .homesNumber(documentLocationDetail.getHomesNumber())
-                                    .build())
-                            .map(identityDocumentInformationDetailResponse -> BaseResponse.build(identityDocumentInformationDetailResponse,true))
-            );
+    return this.identifyDocumentInformationService
+        .findById(id)
+        .switchIfEmpty(
+            Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+        .flatMap(
+            identityDocumentInformation ->
+                this.documentLocationDetailService
+                    .findById(identityDocumentInformation.getLocationIssuePlaceId())
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
+                    .map(
+                        documentLocationDetail ->
+                            IdentificationDocumentDetailResponse.builder()
+                                .id(identityDocumentInformation.getId())
+                                .personalId(
+                                    identityDocumentInformation.getPersonalIdentificationNumber())
+                                .issuedAt(identityDocumentInformation.getIssuedAt())
+                                .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
+                                .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
+                                .locationIssuePlaceId(
+                                    identityDocumentInformation.getLocationIssuePlaceId())
+                                .country(documentLocationDetail.getCountry())
+                                .province(documentLocationDetail.getProvince())
+                                .district(documentLocationDetail.getDistrict())
+                                .ward(documentLocationDetail.getWard())
+                                .street(documentLocationDetail.getStreet())
+                                .homesNumber(documentLocationDetail.getHomesNumber())
+                                .build())
+                    .map(
+                        identityDocumentInformationDetailResponse ->
+                            BaseResponse.build(identityDocumentInformationDetailResponse, true)));
   }
 
   private Mono<Object> sendMessageUpdateAccountService(
