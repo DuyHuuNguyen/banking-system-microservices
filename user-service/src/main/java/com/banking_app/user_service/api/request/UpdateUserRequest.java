@@ -1,6 +1,8 @@
 package com.banking_app.user_service.api.request;
 
 import com.banking_app.user_service.application.dto.*;
+import com.banking_app.user_service.application.dto.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,7 @@ public class UpdateUserRequest {
     this.id = id;
   }
 
+  @Hidden
   public String getPersonalId() {
     return this.identityDocumentInformationDTO.getPersonalId();
   }

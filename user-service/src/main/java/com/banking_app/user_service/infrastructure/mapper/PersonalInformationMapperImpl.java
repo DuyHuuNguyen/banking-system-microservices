@@ -24,6 +24,7 @@ public class PersonalInformationMapperImpl implements PersonalInformationMapper 
         .dateOfBirth(personalInformation.getDateOfBirth())
         .sex(personalInformation.getSex())
         .personalPhoto(personalInformation.getPersonalPhoto())
+            .locationUserDetailId(personalInformation.getLocationUserDetailId())
         .build();
   }
 }
