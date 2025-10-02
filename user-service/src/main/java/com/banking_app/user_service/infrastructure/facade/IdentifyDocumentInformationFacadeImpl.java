@@ -3,7 +3,7 @@ package com.banking_app.user_service.infrastructure.facade;
 import com.banking_app.user_service.api.facade.IdentifyDocumentInformationFacade;
 import com.banking_app.user_service.api.request.IdentificationDocumentInfoCriteria;
 import com.banking_app.user_service.api.request.UpsertIdentificationDocumentInformationRequest;
-import com.banking_app.user_service.api.response.IdentificationDocumentDetailResponse;
+import com.banking_app.user_service.api.response.IdentifyDocumentDetailResponse;
 import com.banking_app.user_service.api.response.IdentityDocumentInformationResponse;
 import com.banking_app.user_service.application.dto.IdentityDocumentInformationDTO;
 import com.banking_app.user_service.application.dto.LocationDTO;
@@ -13,6 +13,7 @@ import com.banking_app.user_service.application.service.ProducerMessageUpdateAcc
 import com.banking_app.user_service.application.service.UserService;
 import com.banking_app.user_service.domain.entity.document_location_detail.DocumentLocationDetail;
 import com.banking_app.user_service.domain.entity.identity_document_information.IdentityDocumentInformation;
+import com.banking_app.user_service.infrastructure.security.SecurityUserDetails;
 import com.banking_app.user_service.infrastructure.util.IdentificationDocumentInformationSpecification;
 import com.example.base.BaseResponse;
 import com.example.base.PaginationResponse;
@@ -22,6 +23,9 @@ import com.example.exception.EntityNotFoundException;
 import com.example.exception.PermissionDeniedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -90,7 +94,7 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
   }
 
   @Override
-  public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(Long id) {
+  public Mono<BaseResponse<IdentifyDocumentDetailResponse>> findDetailById(Long id) {
     return this.identifyDocumentInformationService
         .findById(id)
         .switchIfEmpty(
@@ -103,7 +107,7 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
                         Mono.error(new EntityNotFoundException(ErrorCode.LOCATION_NOT_FOUND)))
                     .map(
                         documentLocationDetail ->
-                            IdentificationDocumentDetailResponse.builder()
+                            IdentifyDocumentDetailResponse.builder()
                                 .id(identityDocumentInformation.getId())
                                 .personalId(
                                     identityDocumentInformation.getPersonalIdentificationNumber())
@@ -159,6 +163,37 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
                     .pageSize(identificationDocumentInfoCriteria.getPageSize())
                     .build())
         .flatMap(paginationOfData -> Mono.just(BaseResponse.build(paginationOfData, true)));
+  }
+
+  @Override
+  public Mono<BaseResponse<IdentityDocumentInformationResponse>>
+      findIdentifyDocumentInformationProfile() {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails ->
+                this.identifyDocumentInformationService
+                    .findByUserId(securityUserDetails.getUserId())
+                    .switchIfEmpty(
+                        Mono.error(
+                            new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+                    .map(
+                        identityDocumentInformation ->
+                            IdentityDocumentInformationResponse.builder()
+                                .id(identityDocumentInformation.getId())
+                                .personalId(
+                                    identityDocumentInformation.getPersonalIdentificationNumber())
+                                .issuedAt(identityDocumentInformation.getIssuedAt())
+                                .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
+                                .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
+                                .locationIssuePlaceId(
+                                    identityDocumentInformation.getLocationIssuePlaceId())
+                                .build())
+                    .map(
+                        identityDocumentInformationResponse ->
+                            BaseResponse.build(identityDocumentInformationResponse, true)));
   }
 
   private Mono<Object> sendMessageUpdateAccountService(

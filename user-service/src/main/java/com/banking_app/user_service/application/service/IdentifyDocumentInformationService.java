@@ -13,4 +13,6 @@ public interface IdentifyDocumentInformationService {
   Flux<IdentityDocumentInformation> findAll(
       IdentificationDocumentInformationSpecification
           identificationDocumentInformationSpecification);
+
+  Mono<IdentityDocumentInformation> findByUserId(Long userId);
 }

@@ -35,4 +35,9 @@ public class IdentifyDocumentInformationServiceImpl implements IdentifyDocumentI
         identificationDocumentInformationSpecification.getQuery(),
         IdentityDocumentInformation.class);
   }
+
+  @Override
+  public Mono<IdentityDocumentInformation> findByUserId(Long userId) {
+    return this.identifyDocumentInformationRepository.findByUserId(userId);
+  }
 }

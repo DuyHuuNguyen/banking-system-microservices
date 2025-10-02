@@ -3,7 +3,7 @@ package com.banking_app.user_service.infrastructure.rest.controller;
 import com.banking_app.user_service.api.facade.IdentifyDocumentInformationFacade;
 import com.banking_app.user_service.api.request.IdentificationDocumentInfoCriteria;
 import com.banking_app.user_service.api.request.UpsertIdentificationDocumentInformationRequest;
-import com.banking_app.user_service.api.response.IdentificationDocumentDetailResponse;
+import com.banking_app.user_service.api.response.IdentifyDocumentDetailResponse;
 import com.banking_app.user_service.api.response.IdentityDocumentInformationResponse;
 import com.example.base.BaseResponse;
 import com.example.base.PaginationResponse;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,17 +44,17 @@ public class IdentificationDocumentInformationController {
   @Operation(tags = {"Identify-documents APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
-  public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(
-      @PathVariable Long id) {
+  public Mono<BaseResponse<IdentifyDocumentDetailResponse>> findDetailById(@PathVariable Long id) {
     return this.identifyDocumentInformationFacade.findDetailById(id);
   }
+
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Identify-documents APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
-  public Mono<BaseResponse<PaginationResponse<IdentityDocumentInformationResponse>>> findByFilter(@NotNull IdentificationDocumentInfoCriteria identificationDocumentInfoCriteria){
+  public Mono<BaseResponse<PaginationResponse<IdentityDocumentInformationResponse>>> findByFilter(
+      @NotNull IdentificationDocumentInfoCriteria identificationDocumentInfoCriteria) {
     return this.identifyDocumentInformationFacade.findByFilter(identificationDocumentInfoCriteria);
   }
-
 }

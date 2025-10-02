@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class IdentificationDocumentDetailResponse {
+public class IdentifyDocumentDetailResponse {
   private Long id;
   private String personalId;
   private Long issuedAt;
