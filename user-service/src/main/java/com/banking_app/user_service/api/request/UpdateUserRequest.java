@@ -1,7 +1,6 @@
 package com.banking_app.user_service.api.request;
 
 import com.banking_app.user_service.application.dto.*;
-import com.banking_app.user_service.application.dto.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

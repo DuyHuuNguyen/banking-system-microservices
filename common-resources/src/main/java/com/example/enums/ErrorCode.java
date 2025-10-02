@@ -14,10 +14,11 @@ public enum ErrorCode {
   LOGGED_IN("Cancel login by policy"),
   PASSWORD_INCORRECT("Password incorrect"),
   USER_NOT_FOUND("User is not found"),
-  INFO_USER_INVALID("Info is invalid"),
+  INFO_USER_INVALID("Info of user is invalid"),
   IDENTITY_DOCUMENT_NOT_FOUND("Identify document is not found"),
   LOCATION_NOT_FOUND("Location is not found"),
-  PERSONAL_INFORMATION_NOT_FOUND("Personal information is not found");
+  PERSONAL_INFORMATION_NOT_FOUND("Personal information is not found"),
+  INFO_IDENTIFICATION_DOCUMENT_INVALID("Info of Identification document is invalid");
 
   private final String message;
 }
