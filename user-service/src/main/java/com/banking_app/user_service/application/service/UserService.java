@@ -11,4 +11,6 @@ public interface UserService {
   Mono<User> findById(Long id);
 
   Flux<User> findAll(UserSpecification userSpecification);
+
+  Mono<User> findByIdentificationDocumentInformationId(Long identificationDocumentInformationId);
 }

@@ -30,4 +30,10 @@ public class UserServiceImpl implements UserService {
   public Flux<User> findAll(UserSpecification userSpecification) {
     return this.r2dbcEntityTemplate.select(userSpecification.getQuery(), User.class);
   }
+
+  @Override
+  public Mono<User> findByIdentificationDocumentInformationId(
+      Long identificationDocumentInformationId) {
+    return null;
+  }
 }

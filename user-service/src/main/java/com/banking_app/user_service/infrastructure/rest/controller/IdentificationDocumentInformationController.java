@@ -2,6 +2,7 @@ package com.banking_app.user_service.infrastructure.rest.controller;
 
 import com.banking_app.user_service.api.facade.IdentifyDocumentInformationFacade;
 import com.banking_app.user_service.api.request.UpsertIdentificationDocumentInformationRequest;
+import com.banking_app.user_service.api.response.IdentificationDocumentDetailResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -33,6 +34,13 @@ public class IdentificationDocumentInformationController {
     return this.identifyDocumentInformationFacade.updateIdentifyDocument(
         upsertIdentificationDocumentInformationRequest);
   }
-
+  @GetMapping("/detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Identify-documents APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<IdentificationDocumentDetailResponse>> findDetailById(@PathVariable Long id){
+    return this.identifyDocumentInformationFacade.findDetailById(id);
+  }
 
 }

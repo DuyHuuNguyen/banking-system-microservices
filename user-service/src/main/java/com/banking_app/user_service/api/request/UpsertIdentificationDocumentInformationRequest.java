@@ -28,6 +28,11 @@ public class UpsertIdentificationDocumentInformationRequest {
     return this.identifyDocumentInformationWithLocationDTO.getLocationDTO();
   }
 
+  @Hidden
+  public String getPersonalId() {
+    return this.identifyDocumentInformationWithLocationDTO.getPersonalId();
+  }
+
   public void withId(Long id) {
     this.id = id;
   }
