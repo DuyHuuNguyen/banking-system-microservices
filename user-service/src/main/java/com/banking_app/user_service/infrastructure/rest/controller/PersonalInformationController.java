@@ -22,7 +22,7 @@ public class PersonalInformationController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Users APIs"})
+  @Operation(tags = {"Personal-information APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_EMPLOYEE')||hasRole('ROLE_ADMIN')")
   public Mono<BaseResponse<Void>> updatePersonalInformation(
@@ -34,7 +34,7 @@ public class PersonalInformationController {
 
   @GetMapping("/personal-information-profile")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Users APIs"})
+  @Operation(tags = {"Personal-information APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<PersonalInformationDetailResponse>> findPersonalInformationProfile() {
@@ -43,7 +43,7 @@ public class PersonalInformationController {
 
   @PatchMapping("/personal-photo")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Identify-documents APIs"})
+  @Operation(tags = {"Personal-information APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<Void>> changePersonalPhoto(
