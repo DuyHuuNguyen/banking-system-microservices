@@ -43,4 +43,8 @@ public class PersonalInformation extends BaseEntity {
     this.sex = personalInformationDTO.getSex();
     this.personalPhoto = personalInformationDTO.getPersonalPhoto();
   }
+
+  public void changePersonalPhoto(String personalPhoto) {
+    this.personalPhoto = personalPhoto;
+  }
 }

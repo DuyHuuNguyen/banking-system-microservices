@@ -21,4 +21,9 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
   public Mono<PersonalInformation> findById(Long id) {
     return this.personalInformationRepository.findById(id);
   }
+
+  @Override
+  public Mono<PersonalInformation> findByUserId(Long userId) {
+    return this.personalInformationRepository.findByUserId(userId);
+  }
 }

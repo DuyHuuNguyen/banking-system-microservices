@@ -63,7 +63,8 @@ public class IdentificationDocumentInformationController {
   @Operation(tags = {"Identify-documents APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  Mono<BaseResponse<IdentityDocumentInformationResponse>> findIdentityDocumentInformationProfile() {
+  public Mono<BaseResponse<IdentityDocumentInformationResponse>>
+      findIdentityDocumentInformationProfile() {
     return this.identifyDocumentInformationFacade.findIdentifyDocumentInformationProfile();
   }
 }

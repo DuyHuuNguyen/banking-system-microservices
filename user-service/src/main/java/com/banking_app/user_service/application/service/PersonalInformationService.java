@@ -7,4 +7,6 @@ public interface PersonalInformationService {
   Mono<PersonalInformation> save(PersonalInformation personalInformation);
 
   Mono<PersonalInformation> findById(Long id);
+
+  Mono<PersonalInformation> findByUserId(Long userId);
 }

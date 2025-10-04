@@ -1,7 +1,9 @@
 package com.banking_app.user_service.infrastructure.rest.controller;
 
 import com.banking_app.user_service.api.facade.PersonalInformationFacade;
+import com.banking_app.user_service.api.request.ChangePersonalPhotoRequest;
 import com.banking_app.user_service.api.request.UpsertPersonalInformationRequest;
+import com.banking_app.user_service.api.response.PersonalInformationDetailResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,5 +30,24 @@ public class PersonalInformationController {
       @RequestBody @Valid UpsertPersonalInformationRequest upsertPersonalInformationRequest) {
     upsertPersonalInformationRequest.withId(id);
     return this.personalInformationFacade.updateIdentifyDocument(upsertPersonalInformationRequest);
+  }
+
+  @GetMapping("/personal-information-profile")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Users APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<PersonalInformationDetailResponse>> findPersonalInformationProfile() {
+    return this.personalInformationFacade.findPersonalInformationProfile();
+  }
+
+  @PatchMapping("/personal-photo")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Identify-documents APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> changePersonalPhoto(
+      ChangePersonalPhotoRequest changePersonalPhotoRequest) {
+    return this.personalInformationFacade.changePersonalPhoto(changePersonalPhotoRequest);
   }
 }
