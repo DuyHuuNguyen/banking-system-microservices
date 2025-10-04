@@ -21,3 +21,9 @@ spring:
 
 logging:
   config: classpath:log4j2-spring.xml
+---
+grpc:
+  client:
+    hello:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
