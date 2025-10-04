@@ -172,7 +172,6 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
         .map(SecurityContext::getAuthentication)
         .map(Authentication::getPrincipal)
         .cast(SecurityUserDetails.class)
-        .doOnNext(System.out::println)
         .flatMap(
             securityUserDetails -> {
               log.info(securityUserDetails.getUserId());
@@ -181,7 +180,6 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
                   .switchIfEmpty(
                       Mono.error(
                           new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
-                  .doOnNext(System.out::println)
                   .map(
                       identityDocumentInformation ->
                           IdentityDocumentInformationResponse.builder()
