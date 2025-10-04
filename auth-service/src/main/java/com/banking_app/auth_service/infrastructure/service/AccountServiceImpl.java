@@ -3,7 +3,7 @@ package com.banking_app.auth_service.infrastructure.service;
 import com.banking_app.auth_service.application.service.AccountService;
 import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.repository.AccountRepository;
-import com.banking_app.auth_service.infrastructure.until.AccountSpecification;
+import com.banking_app.auth_service.infrastructure.util.AccountSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -43,7 +43,13 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Mono<Account> save(Account account) {
+    account.reUpdate();
     return this.accountRepository.save(account);
+  }
+
+  @Override
+  public Mono<Account> findByUserId(Long userId) {
+    return this.accountRepository.findByUserId(userId);
   }
 
   @Override

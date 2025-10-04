@@ -11,12 +11,13 @@ import com.banking_app.auth_service.domain.entity.account.Account;
 import com.banking_app.auth_service.domain.entity.account_role.AccountRole;
 import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
-import com.banking_app.auth_service.infrastructure.until.AccountSpecification;
-import com.banking_app.auth_service.infrastructure.until.GenerateOTPUntil;
+import com.banking_app.auth_service.infrastructure.util.AccountSpecification;
+import com.banking_app.auth_service.infrastructure.util.GenerateOTPUntil;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
 import com.example.base.PaginationResponse;
 import com.example.dto.AccountDTO;
+import com.example.dto.AccountWithRoleDTO;
 import com.example.enums.ErrorCode;
 import com.example.enums.OtpTemplate;
 import com.example.enums.RoleEnum;
@@ -393,6 +394,43 @@ public class AuthFacadeImpl implements AuthFacade {
                             .then(Mono.just(BaseResponse.ok()));
                       });
             });
+  }
+
+  @Override
+  public Mono<AccountWithRoleDTO> validToken(String accessToken) {
+    var isValidateToken = this.jwtService.validateToken(accessToken);
+    if (!isValidateToken) return Mono.empty();
+
+    String personalIdentifyInformation =
+        this.jwtService.getPersonalIdentificationNumberFromJwtToken(accessToken);
+    log.info("personalIdentifyInformation : {}", personalIdentifyInformation);
+
+    return this.accountService
+        .findByPersonalIdentificationNumber(personalIdentifyInformation)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(this::buildAccountWithRole);
+  }
+
+  private Mono<AccountWithRoleDTO> buildAccountWithRole(Account account) {
+    return this.roleService
+        .findRolesByAccountId(account.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND)))
+        .map(Role::getRoleName)
+        .collectList()
+        .flatMap(
+            roles ->
+                Mono.just(
+                    AccountWithRoleDTO.builder()
+                        .accountId(account.getId())
+                        .phone(account.getPhone())
+                        .email(account.getEmail())
+                        .otp(account.getOtp())
+                        .isActive(account.isActive())
+                        .userId(account.getUserId())
+                        .roleEnums(roles)
+                        .personalIdentificationNumber(account.getPersonalIdentificationNumber())
+                        .isEnabled(true)
+                        .build()));
   }
 
   private Mono<AccountResponse> loadRoleForAccount(Account account) {

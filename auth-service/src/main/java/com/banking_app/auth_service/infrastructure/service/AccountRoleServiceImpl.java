@@ -14,6 +14,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 
   @Override
   public Mono<AccountRole> save(AccountRole accountRole) {
+    accountRole.reUpdate();
     return this.roleUserRepository.save(accountRole);
   }
 

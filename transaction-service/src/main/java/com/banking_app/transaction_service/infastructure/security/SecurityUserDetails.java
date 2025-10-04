@@ -38,8 +38,8 @@ public class SecurityUserDetails implements UserDetails {
         .phone(accountWithRoleDTO.getPhone())
         .otp(accountWithRoleDTO.getOtp())
         .personalIdentificationNumber(accountWithRoleDTO.getPersonalIdentificationNumber())
-        .isFirstLogin(accountWithRoleDTO.getIsFirstLogin())
-        .isOneDevice(accountWithRoleDTO.getIsOneDevice())
+        //        .isFirstLogin(accountWithRoleDTO.getIsFirstLogin())
+        //        .isOneDevice(accountWithRoleDTO.getIsOneDevice())
         .authorities(
             accountWithRoleDTO.getRoleEnums().stream()
                 .map(roleEnum -> new SimpleGrantedAuthority(roleEnum.getContent()))

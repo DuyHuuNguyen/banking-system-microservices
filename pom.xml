@@ -20,9 +20,10 @@
         <module>transaction-service</module>
         <module>eureka-service</module>
         <module>api-gateway</module>
-        <module>common-dto</module>
+        <module>common-resources</module>
         <module>common-proto</module>
     </modules>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
