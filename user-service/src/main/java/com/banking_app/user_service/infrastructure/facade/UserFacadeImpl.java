@@ -325,7 +325,6 @@ public class UserFacadeImpl implements UserFacade {
             .pageSize(userCriteria.getPageSize())
             .createdAtInMonth(userCriteria.getMonthCreatedAt())
             .createdAt(userCriteria.getCreatedAt())
-            .sex(userCriteria.getSex())
             .build();
     return this.userService
         .findAll(userSpecification)

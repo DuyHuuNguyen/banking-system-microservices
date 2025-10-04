@@ -2,12 +2,16 @@ package com.banking_app.user_service.infrastructure.rest.controller;
 
 import com.banking_app.user_service.api.facade.PersonalInformationFacade;
 import com.banking_app.user_service.api.request.ChangePersonalPhotoRequest;
+import com.banking_app.user_service.api.request.PersonalInformationCriteria;
 import com.banking_app.user_service.api.request.UpsertPersonalInformationRequest;
 import com.banking_app.user_service.api.response.PersonalInformationDetailResponse;
+import com.banking_app.user_service.api.response.PersonalInformationResponse;
 import com.example.base.BaseResponse;
+import com.example.base.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,5 +53,25 @@ public class PersonalInformationController {
   public Mono<BaseResponse<Void>> changePersonalPhoto(
       ChangePersonalPhotoRequest changePersonalPhotoRequest) {
     return this.personalInformationFacade.changePersonalPhoto(changePersonalPhotoRequest);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Personal-information APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_EMPLOYEE')")
+  public Mono<BaseResponse<PaginationResponse<PersonalInformationResponse>>> findByFilter(
+      @NotNull PersonalInformationCriteria personalInformationCriteria) {
+    return this.personalInformationFacade.findByFilter(personalInformationCriteria);
+  }
+
+  @GetMapping("/detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Personal-information APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_EMPLOYEE')")
+  public Mono<BaseResponse<PersonalInformationDetailResponse>> findDetailById(
+      @PathVariable("id") Long id) {
+    return this.personalInformationFacade.findDetailById(id);
   }
 }

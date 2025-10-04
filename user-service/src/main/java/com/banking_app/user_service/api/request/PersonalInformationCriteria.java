@@ -1,14 +1,18 @@
 package com.banking_app.user_service.api.request;
 
+import com.banking_app.user_service.application.dto.WithinDateRangeDTO;
 import com.example.base.BaseCriteria;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCriteria extends BaseCriteria {
+@Data
+public class PersonalInformationCriteria extends BaseCriteria {
   private Long createdAt;
-  private Long monthCreatedAt;
+  private WithinDateRangeDTO withinDateRange;
+  private String sex;
 }

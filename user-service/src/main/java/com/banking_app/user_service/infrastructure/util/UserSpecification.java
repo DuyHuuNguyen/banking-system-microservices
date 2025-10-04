@@ -82,13 +82,6 @@ public class UserSpecification {
     }
 
     @Override
-    public UserSpecificationBuilder sex(String sex) {
-      if (sex == null) return this;
-      this.criteria = this.criteria.and("sex").like(sex);
-      return this;
-    }
-
-    @Override
     public UserSpecificationBuilder pageSize(Integer pageSize) {
       if (pageSize == null) return this;
       this.pageSize = pageSize;

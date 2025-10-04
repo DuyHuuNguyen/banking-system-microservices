@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public Mono<User> findByIdentificationDocumentInformationId(
       Long identificationDocumentInformationId) {
-    return null;
+    return this.userRepository.findByIdentificationDocumentInformationId(
+        identificationDocumentInformationId);
   }
 }

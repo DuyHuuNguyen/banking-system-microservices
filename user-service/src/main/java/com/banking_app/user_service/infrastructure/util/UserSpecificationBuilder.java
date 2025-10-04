@@ -10,8 +10,6 @@ public interface UserSpecificationBuilder {
 
   UserSpecificationBuilder createdAt(Long createdAt);
 
-  UserSpecificationBuilder sex(String sex);
-
   UserSpecificationBuilder pageSize(Integer pageSize);
 
   UserSpecificationBuilder pageNumber(Integer pageNumber);

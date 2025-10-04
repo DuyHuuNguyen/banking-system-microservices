@@ -90,7 +90,7 @@ public class IdentificationDocumentInformationSpecification {
       if (dateRange == null) return this;
       this.criteria =
           this.criteria.and("created_at").between(dateRange.getFrom(), dateRange.getTo());
-      return null;
+      return this;
     }
 
     @Override
