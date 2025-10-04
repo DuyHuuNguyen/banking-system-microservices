@@ -57,4 +57,13 @@ public class IdentificationDocumentInformationController {
       @NotNull IdentificationDocumentInfoCriteria identificationDocumentInfoCriteria) {
     return this.identifyDocumentInformationFacade.findByFilter(identificationDocumentInfoCriteria);
   }
+
+  @GetMapping("/identify-document-profile")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Identify-documents APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  Mono<BaseResponse<IdentityDocumentInformationResponse>> findIdentityDocumentInformationProfile() {
+    return this.identifyDocumentInformationFacade.findIdentifyDocumentInformationProfile();
+  }
 }

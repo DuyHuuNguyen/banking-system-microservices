@@ -6,11 +6,13 @@ import com.example.server.grpc.AuthResponse;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@ToString
 @Log4j2
 @Builder
 public class SecurityUserDetails implements UserDetails {

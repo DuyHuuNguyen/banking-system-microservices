@@ -1,5 +1,7 @@
 package com.banking_app.user_service.infrastructure.util;
 
+import com.banking_app.user_service.application.dto.WithinDateRangeDTO;
+
 public interface IdentificationDocumentInformationSpecificationBuilder {
 
   IdentificationDocumentInformationSpecificationBuilder createdAt(Long createdAt);
@@ -13,6 +15,9 @@ public interface IdentificationDocumentInformationSpecificationBuilder {
   IdentificationDocumentInformationSpecificationBuilder pageSize(Integer pageSize);
 
   IdentificationDocumentInformationSpecificationBuilder createdAtWithinRange(Long from, Long to);
+
+  IdentificationDocumentInformationSpecificationBuilder createdAtWithinRange(
+      WithinDateRangeDTO dateRange);
 
   IdentificationDocumentInformationSpecification build();
 }

@@ -9,8 +9,9 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface IdentifyDocumentInformationRepository
     extends ReactiveCrudRepository<IdentityDocumentInformation, Long> {
+
     @Query("""
-    SELECT iddi
+    SELECT iddi.*
     FROM identity_document_information iddi
     JOIN users u
     ON u.identify_document_information_id = iddi.id

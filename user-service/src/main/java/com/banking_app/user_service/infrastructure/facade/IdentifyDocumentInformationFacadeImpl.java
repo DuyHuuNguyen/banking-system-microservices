@@ -138,7 +138,7 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
             .pageSize(identificationDocumentInfoCriteria.getPageSize())
             .createdAt(identificationDocumentInfoCriteria.getCreatedAt())
             .issuedAt(identificationDocumentInfoCriteria.getIssuedAt())
-            .createdAtWithinRange(withinDateRangeDTO.getFrom(), withinDateRangeDTO.getTo())
+            .createdAtWithinRange(withinDateRangeDTO)
             .build();
     return this.identifyDocumentInformationService
         .findAll(identificationDocumentInformationSpecification)
@@ -172,28 +172,32 @@ public class IdentifyDocumentInformationFacadeImpl implements IdentifyDocumentIn
         .map(SecurityContext::getAuthentication)
         .map(Authentication::getPrincipal)
         .cast(SecurityUserDetails.class)
+        .doOnNext(System.out::println)
         .flatMap(
-            securityUserDetails ->
-                this.identifyDocumentInformationService
-                    .findByUserId(securityUserDetails.getUserId())
-                    .switchIfEmpty(
-                        Mono.error(
-                            new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
-                    .map(
-                        identityDocumentInformation ->
-                            IdentityDocumentInformationResponse.builder()
-                                .id(identityDocumentInformation.getId())
-                                .personalId(
-                                    identityDocumentInformation.getPersonalIdentificationNumber())
-                                .issuedAt(identityDocumentInformation.getIssuedAt())
-                                .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
-                                .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
-                                .locationIssuePlaceId(
-                                    identityDocumentInformation.getLocationIssuePlaceId())
-                                .build())
-                    .map(
-                        identityDocumentInformationResponse ->
-                            BaseResponse.build(identityDocumentInformationResponse, true)));
+            securityUserDetails -> {
+              log.info(securityUserDetails.getUserId());
+              return this.identifyDocumentInformationService
+                  .findByUserId(securityUserDetails.getUserId())
+                  .switchIfEmpty(
+                      Mono.error(
+                          new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)))
+                  .doOnNext(System.out::println)
+                  .map(
+                      identityDocumentInformation ->
+                          IdentityDocumentInformationResponse.builder()
+                              .id(identityDocumentInformation.getId())
+                              .personalId(
+                                  identityDocumentInformation.getPersonalIdentificationNumber())
+                              .issuedAt(identityDocumentInformation.getIssuedAt())
+                              .citizenIdFront(identityDocumentInformation.getCitizenIdFront())
+                              .citizenIdBack(identityDocumentInformation.getCitizenIdBack())
+                              .locationIssuePlaceId(
+                                  identityDocumentInformation.getLocationIssuePlaceId())
+                              .build())
+                  .map(
+                      identityDocumentInformationResponse ->
+                          BaseResponse.build(identityDocumentInformationResponse, true));
+            });
   }
 
   private Mono<Object> sendMessageUpdateAccountService(

@@ -1,5 +1,6 @@
 package com.banking_app.user_service.infrastructure.util;
 
+import com.banking_app.user_service.application.dto.WithinDateRangeDTO;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -81,6 +82,15 @@ public class IdentificationDocumentInformationSpecification {
       if (from == null || to == null) return this;
       this.criteria = this.criteria.and("created_at").between(from, to);
       return this;
+    }
+
+    @Override
+    public IdentificationDocumentInformationSpecificationBuilder createdAtWithinRange(
+        WithinDateRangeDTO dateRange) {
+      if (dateRange == null) return this;
+      this.criteria =
+          this.criteria.and("created_at").between(dateRange.getFrom(), dateRange.getTo());
+      return null;
     }
 
     @Override
