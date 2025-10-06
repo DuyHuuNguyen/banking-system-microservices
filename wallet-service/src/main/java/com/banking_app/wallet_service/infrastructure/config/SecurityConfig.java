@@ -28,10 +28,7 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 public class SecurityConfig {
 
   private static final String[] WHITE_LISTS = {
-          "/swagger-ui.html",
-          "/swagger-ui/**",
-          "/v3/api-docs/**",
-          "/actuator/**"
+    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
   };
 
   @Bean
@@ -41,33 +38,32 @@ public class SecurityConfig {
 
   @Bean
   public ReactiveAuthenticationManager authenticationManager(
-          PasswordEncoder passwordEncoder, SecurityReactiveUserDetailService userDetailsService) {
+      PasswordEncoder passwordEncoder, SecurityReactiveUserDetailService userDetailsService) {
     UserDetailsRepositoryReactiveAuthenticationManager reactiveAuthenticationManager =
-            new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
     reactiveAuthenticationManager.setPasswordEncoder(passwordEncoder);
     return reactiveAuthenticationManager;
   }
 
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(
-          ServerHttpSecurity http,
-          ReactiveAuthenticationManager reactiveAuthenticationManager,
-          AuthGrpcClientService authGrpcClientService) {
+      ServerHttpSecurity http,
+      ReactiveAuthenticationManager reactiveAuthenticationManager,
+      AuthGrpcClientService authGrpcClientService) {
     http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .cors(ServerHttpSecurity.CorsSpec::disable)
-            .httpBasic(
-                    httpBasicSpec ->
-                            httpBasicSpec.authenticationEntryPoint(
-                                    new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)))
-            .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-            .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-            .authorizeExchange(
-                    exchanges ->
-                            exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated())
-            .addFilterBefore(
-                    new AuthTokenInterceptor( authGrpcClientService),
-                    SecurityWebFiltersOrder.HTTP_BASIC)
-            .authenticationManager(reactiveAuthenticationManager);
+        .cors(ServerHttpSecurity.CorsSpec::disable)
+        .httpBasic(
+            httpBasicSpec ->
+                httpBasicSpec.authenticationEntryPoint(
+                    new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)))
+        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+        .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+        .authorizeExchange(
+            exchanges ->
+                exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated())
+        .addFilterBefore(
+            new AuthTokenInterceptor(authGrpcClientService), SecurityWebFiltersOrder.HTTP_BASIC)
+        .authenticationManager(reactiveAuthenticationManager);
     return http.build();
   }
 }

@@ -13,20 +13,20 @@ import reactor.core.publisher.Mono;
 @Log4j2
 public class AuthGrpcClientServiceImpl implements AuthGrpcClientService {
 
-    @GrpcClient("hello")
-    private AuthTokenServiceGrpc.AuthTokenServiceBlockingStub authTokenServiceBlockingStub;
+  @GrpcClient("wallet-hello")
+  private AuthTokenServiceGrpc.AuthTokenServiceBlockingStub authTokenServiceBlockingStub;
 
-    @Override
-    public Mono<AuthResponse> parseToken(String token) {
-        AccessTokenRequest request = AccessTokenRequest.newBuilder().setAccessToken(token).build();
-        return Mono.fromCallable(() -> authTokenServiceBlockingStub.parseToken(request))
-                .materialize()
-                .flatMap(
-                        signal -> {
-                            if (signal.isOnError()) {
-                                return Mono.just(AuthResponse.newBuilder().setIsEnabled(false).build());
-                            }
-                            return Mono.just(signal.get());
-                        });
-    }
+  @Override
+  public Mono<AuthResponse> parseToken(String token) {
+    AccessTokenRequest request = AccessTokenRequest.newBuilder().setAccessToken(token).build();
+    return Mono.fromCallable(() -> authTokenServiceBlockingStub.parseToken(request))
+        .materialize()
+        .flatMap(
+            signal -> {
+              if (signal.isOnError()) {
+                return Mono.just(AuthResponse.newBuilder().setIsEnabled(false).build());
+              }
+              return Mono.just(signal.get());
+            });
+  }
 }

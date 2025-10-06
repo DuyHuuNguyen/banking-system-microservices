@@ -24,6 +24,6 @@ logging:
 ---
 grpc:
   client:
-    hello:
+    wallet-hello:
       address: 'static://localhost:9090'
       negotiationType: plaintext

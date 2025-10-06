@@ -25,113 +25,112 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthTokenInterceptor implements WebFilter {
 
-    private final AuthGrpcClientService authGrpcClientService;
+  private final AuthGrpcClientService authGrpcClientService;
 
-    private final int TIMEOUT_RANGE = 3;
+  private final int TIMEOUT_RANGE = 3;
 
-    private final List<String> PUBLIC_APIS =
-            List.of("/actuator/");
-    private final List<String> SWAGGER_URLS =
-            List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs", "/favicon.ico");
+  private final List<String> PUBLIC_APIS = List.of("/actuator/");
+  private final List<String> SWAGGER_URLS =
+      List.of("/swagger-ui/", "/swagger-ui/index.html", "/v3/api-docs", "/favicon.ico");
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if (isSkipAuthentication(exchange))
-            return chain
-                    .filter(exchange)
-                    .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
-                    .onErrorResume(
-                            TimeoutException.class,
-                            ex -> {
-                                exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
-                                return exchange.getResponse().setComplete();
-                            });
+  @Override
+  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    if (isSkipAuthentication(exchange))
+      return chain
+          .filter(exchange)
+          .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
+          .onErrorResume(
+              TimeoutException.class,
+              ex -> {
+                exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
+                return exchange.getResponse().setComplete();
+              });
 
-        String token = this.getTokenFromHeader(exchange);
-        log.info("token: {}", token);
+    String token = this.getTokenFromHeader(exchange);
+    log.info("token: {}", token);
 
-        var isNullAccessToken = (token == null);
-        if (isNullAccessToken) return this.setResponseUnAuthenticated(exchange);
+    var isNullAccessToken = (token == null);
+    if (isNullAccessToken) return this.setResponseUnAuthenticated(exchange);
 
-        return this.authGrpcClientService
-                .parseToken(token)
-                .flatMap(
-                        authResponse ->
-                                authResponse.getIsEnabled()
-                                        ? Mono.just(authResponse)
-                                        : this.unauthorizedResponse(exchange))
-                .cast(AuthResponse.class)
-                .doOnNext(authResponse -> log.info(authResponse.toString()))
-                .map(SecurityUserDetails::build)
-                .flatMap(
-                        securityUserDetails ->
-                                this.addAuthenticationIntoContext(exchange, chain, securityUserDetails));
+    return this.authGrpcClientService
+        .parseToken(token)
+        .flatMap(
+            authResponse ->
+                authResponse.getIsEnabled()
+                    ? Mono.just(authResponse)
+                    : this.unauthorizedResponse(exchange))
+        .cast(AuthResponse.class)
+        .doOnNext(authResponse -> log.info(authResponse.toString()))
+        .map(SecurityUserDetails::build)
+        .flatMap(
+            securityUserDetails ->
+                this.addAuthenticationIntoContext(exchange, chain, securityUserDetails));
+  }
+
+  private Mono<Void> setResponseUnAuthenticated(ServerWebExchange exchange) {
+    return exchange
+        .getResponse()
+        .setComplete()
+        .then(
+            Mono.defer(
+                () -> {
+                  exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                  return exchange.getResponse().setComplete();
+                }));
+  }
+
+  public Mono<Void> unauthorizedResponse(ServerWebExchange exchange) {
+    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    UnAuthenticationResponse body =
+        UnAuthenticationResponse.builder()
+            .error("Unauthorized")
+            .statusCode(401)
+            .message("Token is invalided")
+            .build();
+
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      byte[] bytes = mapper.writeValueAsBytes(body);
+      DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+      return exchange.getResponse().writeWith(Mono.just(buffer));
+    } catch (Exception e) {
+      return exchange.getResponse().setComplete();
     }
+  }
 
-    private Mono<Void> setResponseUnAuthenticated(ServerWebExchange exchange) {
-        return exchange
-                .getResponse()
-                .setComplete()
-                .then(
-                        Mono.defer(
-                                () -> {
-                                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                                    return exchange.getResponse().setComplete();
-                                }));
-    }
+  private boolean isSkipAuthentication(ServerWebExchange exchange) {
+    String path = exchange.getRequest().getURI().getPath();
+    log.info("path {}", path);
+    boolean isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
+    boolean isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
+    log.info("isSkipAuth {}", isSwagger || isPublic);
+    return isSwagger || isPublic;
+  }
 
-    public Mono<Void> unauthorizedResponse(ServerWebExchange exchange) {
-        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+  private Mono<Void> addAuthenticationIntoContext(
+      ServerWebExchange exchange, WebFilterChain chain, SecurityUserDetails userDetails) {
+    return chain
+        .filter(exchange)
+        .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
+        .onErrorResume(
+            TimeoutException.class,
+            ex -> {
+              exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
+              return exchange.getResponse().setComplete();
+            })
+        .contextWrite(
+            ReactiveSecurityContextHolder.withAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities())));
+  }
 
-        UnAuthenticationResponse body =
-                UnAuthenticationResponse.builder()
-                        .error("Unauthorized")
-                        .statusCode(401)
-                        .message("Token is invalided")
-                        .build();
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            byte[] bytes = mapper.writeValueAsBytes(body);
-            DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
-            return exchange.getResponse().writeWith(Mono.just(buffer));
-        } catch (Exception e) {
-            return exchange.getResponse().setComplete();
-        }
-    }
-
-    private boolean isSkipAuthentication(ServerWebExchange exchange) {
-        String path = exchange.getRequest().getURI().getPath();
-        log.info("path {}", path);
-        boolean isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
-        boolean isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
-        log.info("isSkipAuth {}", isSwagger || isPublic);
-        return isSwagger || isPublic;
-    }
-
-    private Mono<Void> addAuthenticationIntoContext(
-            ServerWebExchange exchange, WebFilterChain chain, SecurityUserDetails userDetails) {
-        return chain
-                .filter(exchange)
-                .timeout(Duration.ofSeconds(this.TIMEOUT_RANGE))
-                .onErrorResume(
-                        TimeoutException.class,
-                        ex -> {
-                            exchange.getResponse().setStatusCode(HttpStatus.REQUEST_TIMEOUT);
-                            return exchange.getResponse().setComplete();
-                        })
-                .contextWrite(
-                        ReactiveSecurityContextHolder.withAuthentication(
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities())));
-    }
-
-    private String getTokenFromHeader(ServerWebExchange serverWebExchange) {
-        HttpHeaders headers = serverWebExchange.getRequest().getHeaders();
-        String authHeader = headers.getFirst("Authorization");
-        if (authHeader == null) return null;
-        log.info("token : {}", authHeader);
-        return authHeader.substring(7);
-    }
+  private String getTokenFromHeader(ServerWebExchange serverWebExchange) {
+    HttpHeaders headers = serverWebExchange.getRequest().getHeaders();
+    String authHeader = headers.getFirst("Authorization");
+    if (authHeader == null) return null;
+    log.info("token : {}", authHeader);
+    return authHeader.substring(7);
+  }
 }

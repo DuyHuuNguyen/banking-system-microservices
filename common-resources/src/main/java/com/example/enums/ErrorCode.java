@@ -18,7 +18,9 @@ public enum ErrorCode {
   IDENTITY_DOCUMENT_NOT_FOUND("Identify document is not found"),
   LOCATION_NOT_FOUND("Location is not found"),
   PERSONAL_INFORMATION_NOT_FOUND("Personal information is not found"),
-  INFO_IDENTIFICATION_DOCUMENT_INVALID("Info of Identification document is invalid");
+  INFO_IDENTIFICATION_DOCUMENT_INVALID("Info of Identification document is invalid"),
+  CREATE_FAIL_WALLET("Create wallet failed"),
+  WALLET_NOT_FOUND("Wallet is not found");
 
   private final String message;
 }

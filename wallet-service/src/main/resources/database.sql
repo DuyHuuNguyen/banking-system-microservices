@@ -2,7 +2,7 @@ CREATE TABLE "wallets"
 (
     "id"               BIGSERIAL PRIMARY KEY NOT NULL,
     "balance"          float                 NOT NULL,
-    "currency"         varchar[100] NOT NULL,
+    "currency"         varchar(50) NOT NULL,
     "user_id"          bigint                NOT NULL,
     "wallet_detail_id" bigint,
     "is_active"        boolean               NOT NULL DEFAULT true,

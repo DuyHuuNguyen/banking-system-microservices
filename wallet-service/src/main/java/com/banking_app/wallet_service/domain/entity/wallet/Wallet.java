@@ -1,6 +1,7 @@
 package com.banking_app.wallet_service.domain.entity.wallet;
 
 import com.banking_app.wallet_service.domain.entity.common.BaseEntity;
+import com.example.enums.CurrencyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +19,15 @@ public class Wallet extends BaseEntity {
   private Double balance;
 
   @Column("currency")
-  private String currency;
+  private CurrencyEnum currency;
 
   @Column("user_id")
   private Long userId;
 
   @Column("wallet_detail_id")
   private Long walletDetailId;
+
+  public void addWalletDetailId(Long walletDetailId) {
+    this.walletDetailId = walletDetailId;
+  }
 }
