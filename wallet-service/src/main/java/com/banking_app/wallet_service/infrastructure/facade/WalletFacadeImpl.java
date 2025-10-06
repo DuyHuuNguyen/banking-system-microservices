@@ -66,7 +66,7 @@ public class WalletFacadeImpl implements WalletFacade {
   }
 
   @Override
-  public Mono<BaseResponse<List<WalletResponse>>> findAllWallets() {
+  public Mono<BaseResponse<List<WalletResponse>>> findAllPersonalWallets() {
     return ReactiveSecurityContextHolder.getContext()
         .map(SecurityContext::getAuthentication)
         .map(Authentication::getPrincipal)

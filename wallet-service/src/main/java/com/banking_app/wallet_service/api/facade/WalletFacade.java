@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono;
 public interface WalletFacade {
   Mono<BaseResponse<Void>> createWallet(UpsertWalletRequest upsertWalletRequest);
 
-  Mono<BaseResponse<List<WalletResponse>>> findAllWallets();
+  Mono<BaseResponse<List<WalletResponse>>> findAllPersonalWallets();
 }
