@@ -21,4 +21,9 @@ public class WalletDetailServiceImpl implements WalletDetailService {
   public Mono<WalletDetail> findByWalletId(Long walletId) {
     return this.walletDetailRepository.findByWalletId(walletId);
   }
+
+  @Override
+  public Mono<WalletDetail> findById(Long id) {
+    return this.walletDetailRepository.findById(id);
+  }
 }

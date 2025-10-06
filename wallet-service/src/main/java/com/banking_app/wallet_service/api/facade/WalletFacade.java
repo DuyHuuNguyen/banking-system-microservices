@@ -10,4 +10,6 @@ public interface WalletFacade {
   Mono<BaseResponse<Void>> createWallet(UpsertWalletRequest upsertWalletRequest);
 
   Mono<BaseResponse<List<WalletResponse>>> findAllPersonalWallets();
+
+  Mono<BaseResponse<Void>> updatePersonalWallet(UpsertWalletRequest upsertWalletRequest);
 }

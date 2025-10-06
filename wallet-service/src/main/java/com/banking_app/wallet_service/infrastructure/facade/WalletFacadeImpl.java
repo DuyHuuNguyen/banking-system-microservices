@@ -90,6 +90,36 @@ public class WalletFacadeImpl implements WalletFacade {
                         }));
   }
 
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> updatePersonalWallet(UpsertWalletRequest upsertWalletRequest) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails -> {
+              return this.walletService
+                  .findById(upsertWalletRequest.getId())
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
+                  .flatMap(
+                      wallet -> {
+                        return this.walletDetailService
+                            .findById(wallet.getWalletDetailId())
+                            .switchIfEmpty(
+                                Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
+                            .flatMap(
+                                walletDetail -> {
+                                  walletDetail.rename(upsertWalletRequest.getWalletName());
+                                  walletDetail.changeDescription(walletDetail.getDescription());
+                                  return this.walletDetailService.save(walletDetail);
+                                });
+                      })
+                  .thenReturn(BaseResponse.ok());
+            });
+  }
+
   private CompletableFuture<WalletResponse> buildWalletResponse(Wallet wallet) {
     return this.walletDetailService
         .findByWalletId(wallet.getId())

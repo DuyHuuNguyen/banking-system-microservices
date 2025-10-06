@@ -7,4 +7,6 @@ public interface WalletDetailService {
   Mono<WalletDetail> save(WalletDetail walletDetail);
 
   Mono<WalletDetail> findByWalletId(Long walletId);
+
+  Mono<WalletDetail> findById(Long id);
 }
