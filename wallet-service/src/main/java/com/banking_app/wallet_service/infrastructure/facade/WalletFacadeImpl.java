@@ -179,21 +179,7 @@ public class WalletFacadeImpl implements WalletFacade {
                                     })));
   }
 
-  private CompletableFuture<List<FundDTO>> fetchFundByWalletId(Long walletId) {
-    return this.fundService
-        .findByWalletId(walletId)
-        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
-        .map(
-            fund ->
-                FundDTO.builder()
-                    .fundName(fund.getFundName())
-                    .balance(fund.getBalance())
-                    .description(fund.getDescription())
-                    .id(fund.getId())
-                    .build())
-        .collectList()
-        .toFuture();
-  }
+
 
   private CompletableFuture<WalletResponse> buildWalletResponse(Wallet wallet) {
     return this.walletDetailService
