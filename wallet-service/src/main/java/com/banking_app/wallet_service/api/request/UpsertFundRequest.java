@@ -14,4 +14,8 @@ public class UpsertFundRequest {
   @NotNull private Long walletId;
   @NotNull private String fundName;
   private String description;
+
+  public void withId(Long id) {
+    this.id = id;
+  }
 }

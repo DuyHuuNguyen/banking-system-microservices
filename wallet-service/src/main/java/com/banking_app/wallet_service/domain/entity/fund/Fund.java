@@ -25,4 +25,12 @@ public class Fund extends BaseEntity {
 
   @Column("wallet_id")
   private Long walletId;
+
+  public void changeName(String name) {
+    this.fundName = name;
+  }
+
+  public void changeDescription(String description) {
+    this.description = description;
+  }
 }

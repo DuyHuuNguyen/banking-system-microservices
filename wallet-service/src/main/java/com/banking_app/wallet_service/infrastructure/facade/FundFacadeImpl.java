@@ -52,4 +52,25 @@ public class FundFacadeImpl implements FundFacade {
                         }))
         .thenReturn(BaseResponse.ok());
   }
+
+  @Override
+  public Mono<BaseResponse<Void>> updateFundById(UpsertFundRequest upsertFundRequest) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails ->
+                this.fundService
+                    .findById(upsertFundRequest.getId())
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.FUND_NOT_FOUND)))
+                    .flatMap(
+                        fund -> {
+                          fund.changeName(upsertFundRequest.getFundName());
+                          fund.changeDescription(upsertFundRequest.getDescription());
+                          return this.fundService.save(fund);
+                        }))
+        .thenReturn(BaseResponse.ok());
+  }
 }

@@ -27,4 +27,15 @@ public class FundController {
       @RequestBody @Valid UpsertFundRequest upsertFundRequest) {
     return this.fundFacade.createFund(upsertFundRequest);
   }
+
+  @PutMapping("{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Funds APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> updateFundById(
+      @PathVariable Long id, @RequestBody UpsertFundRequest upsertFundRequest) {
+    upsertFundRequest.withId(id);
+    return this.fundFacade.updateFundById(upsertFundRequest);
+  }
 }

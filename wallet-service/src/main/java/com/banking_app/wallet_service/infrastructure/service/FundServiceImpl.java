@@ -23,4 +23,9 @@ public class FundServiceImpl implements FundService {
     if (fund.getId() != null) fund.reUpdate();
     return this.fundRepository.save(fund);
   }
+
+  @Override
+  public Mono<Fund> findById(Long id) {
+    return this.fundRepository.findById(id);
+  }
 }
