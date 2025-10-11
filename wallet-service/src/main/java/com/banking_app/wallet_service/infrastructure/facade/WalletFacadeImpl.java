@@ -105,6 +105,10 @@ public class WalletFacadeImpl implements WalletFacade {
             securityUserDetails -> {
               return this.walletService
                   .findById(upsertWalletRequest.getId())
+                  .filter(
+                      wallet ->
+                          wallet.getUserId().equals(securityUserDetails.getUserId())
+                              && wallet.isActive())
                   .switchIfEmpty(
                       Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
                   .flatMap(
@@ -136,7 +140,10 @@ public class WalletFacadeImpl implements WalletFacade {
                     .findById(id)
                     .switchIfEmpty(
                         Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
-                    .filter(wallet -> wallet.getUserId().equals(securityUserDetails.getUserId()))
+                    .filter(
+                        wallet ->
+                            wallet.getUserId().equals(securityUserDetails.getUserId())
+                                && wallet.isActive())
                     .switchIfEmpty(
                         Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
                     .flatMap(

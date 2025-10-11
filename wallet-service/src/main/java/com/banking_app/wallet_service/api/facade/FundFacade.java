@@ -8,4 +8,6 @@ public interface FundFacade {
   Mono<BaseResponse<Void>> createFund(UpsertFundRequest upsertFundRequest);
 
   Mono<BaseResponse<Void>> updateFundById(UpsertFundRequest upsertFundRequest);
+
+  Mono<BaseResponse<Void>> deleteFundById(Long id);
 }

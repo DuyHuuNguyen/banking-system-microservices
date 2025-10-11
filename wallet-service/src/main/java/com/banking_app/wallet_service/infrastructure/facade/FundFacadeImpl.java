@@ -9,6 +9,7 @@ import com.banking_app.wallet_service.infrastructure.security.SecurityUserDetail
 import com.example.base.BaseResponse;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
+import com.example.exception.PermissionDeniedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -36,7 +37,10 @@ public class FundFacadeImpl implements FundFacade {
                     .findById(upsertFundRequest.getWalletId())
                     .switchIfEmpty(
                         Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
-                    .filter(wallet -> wallet.getUserId().equals(securityUserDetails.getUserId()))
+                    .filter(
+                        wallet ->
+                            wallet.getUserId().equals(securityUserDetails.getUserId())
+                                && wallet.isActive())
                     .switchIfEmpty(
                         Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
                     .flatMap(
@@ -48,7 +52,13 @@ public class FundFacadeImpl implements FundFacade {
                                   .walletId(wallet.getId())
                                   .description(upsertFundRequest.getDescription())
                                   .build();
-                          return this.fundService.save(fund);
+                          return this.fundService
+                              .save(fund)
+                              .doOnError(
+                                  error -> {
+                                    throw new PermissionDeniedException(
+                                        ErrorCode.UPDATE_ENTITY_ERROR);
+                                  });
                         }))
         .thenReturn(BaseResponse.ok());
   }
@@ -69,7 +79,40 @@ public class FundFacadeImpl implements FundFacade {
                         fund -> {
                           fund.changeName(upsertFundRequest.getFundName());
                           fund.changeDescription(upsertFundRequest.getDescription());
-                          return this.fundService.save(fund);
+                          return this.fundService
+                              .save(fund)
+                              .doOnError(
+                                  error -> {
+                                    throw new PermissionDeniedException(
+                                        ErrorCode.UPDATE_ENTITY_ERROR);
+                                  });
+                        }))
+        .thenReturn(BaseResponse.ok());
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> deleteFundById(Long id) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails ->
+                this.fundService
+                    .findByUserIdAndFundId(securityUserDetails.getUserId(), id)
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.FUND_NOT_FOUND)))
+                    .flatMap(
+                        fund -> {
+                          fund.disable();
+                          return this.fundService
+                              .save(fund)
+                              .doOnError(
+                                  error -> {
+                                    throw new PermissionDeniedException(
+                                        ErrorCode.DENY_SOFT_DELETE_ENTITY);
+                                  });
                         }))
         .thenReturn(BaseResponse.ok());
   }

@@ -28,4 +28,9 @@ public class FundServiceImpl implements FundService {
   public Mono<Fund> findById(Long id) {
     return this.fundRepository.findById(id);
   }
+
+  @Override
+  public Mono<Fund> findByUserIdAndFundId(Long userId, Long fundId) {
+    return this.fundRepository.findByUserIdAnAndFundId(userId, fundId);
+  }
 }

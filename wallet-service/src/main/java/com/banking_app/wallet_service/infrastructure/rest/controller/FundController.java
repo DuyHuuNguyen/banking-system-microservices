@@ -28,7 +28,7 @@ public class FundController {
     return this.fundFacade.createFund(upsertFundRequest);
   }
 
-  @PutMapping("{id}")
+  @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Funds APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
@@ -38,4 +38,14 @@ public class FundController {
     upsertFundRequest.withId(id);
     return this.fundFacade.updateFundById(upsertFundRequest);
   }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Funds APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> deleteFundById(@PathVariable Long id){
+    return this.fundFacade.deleteFundById(id);
+  }
+
 }

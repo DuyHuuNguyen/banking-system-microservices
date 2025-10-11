@@ -21,7 +21,9 @@ public enum ErrorCode {
   INFO_IDENTIFICATION_DOCUMENT_INVALID("Info of Identification document is invalid"),
   CREATE_FAIL_WALLET("Create wallet failed"),
   WALLET_NOT_FOUND("Wallet is not found"),
-  FUND_NOT_FOUND("Fund is not found");
+  FUND_NOT_FOUND("Fund is not found"),
+  DENY_SOFT_DELETE_ENTITY("Can't delete entity"),
+  UPDATE_ENTITY_ERROR("Update is error");
 
   private final String message;
 }

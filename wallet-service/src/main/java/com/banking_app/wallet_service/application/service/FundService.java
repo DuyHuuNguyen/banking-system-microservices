@@ -10,4 +10,6 @@ public interface FundService {
   Mono<Fund> save(Fund fund);
 
   Mono<Fund> findById(Long id);
+
+  Mono<Fund> findByUserIdAndFundId(Long userId, Long fundId);
 }
