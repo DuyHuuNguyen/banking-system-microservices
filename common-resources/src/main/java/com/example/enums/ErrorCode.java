@@ -20,7 +20,8 @@ public enum ErrorCode {
   PERSONAL_INFORMATION_NOT_FOUND("Personal information is not found"),
   INFO_IDENTIFICATION_DOCUMENT_INVALID("Info of Identification document is invalid"),
   CREATE_FAIL_WALLET("Create wallet failed"),
-  WALLET_NOT_FOUND("Wallet is not found");
+  WALLET_NOT_FOUND("Wallet is not found"),
+  FUND_NOT_FOUND("Fund is not found");
 
   private final String message;
 }

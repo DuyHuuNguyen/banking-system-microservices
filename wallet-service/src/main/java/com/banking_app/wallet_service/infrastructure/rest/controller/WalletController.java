@@ -2,7 +2,8 @@ package com.banking_app.wallet_service.infrastructure.rest.controller;
 
 import com.banking_app.wallet_service.api.facade.WalletFacade;
 import com.banking_app.wallet_service.api.request.UpsertWalletRequest;
-import com.banking_app.wallet_service.api.request.WalletResponse;
+import com.banking_app.wallet_service.api.response.WalletDetailResponse;
+import com.banking_app.wallet_service.api.response.WalletResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -48,5 +49,14 @@ public class WalletController {
       @PathVariable Long id, @RequestBody @Valid UpsertWalletRequest upsertWalletRequest) {
     upsertWalletRequest.withId(id);
     return this.walletFacade.updatePersonalWallet(upsertWalletRequest);
+  }
+
+  @GetMapping("/detail/{id}")
+  @ResponseStatus(HttpStatus.CREATED)
+  @Operation(tags = {"Wallets APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<WalletDetailResponse>> findWalletDetailById(@PathVariable Long id) {
+    return this.walletFacade.findWalletDetailById(id);
   }
 }

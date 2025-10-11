@@ -1,3 +1,8 @@
 package com.banking_app.wallet_service.application.service;
 
-public interface FundService {}
+import com.banking_app.wallet_service.domain.entity.fund.Fund;
+import reactor.core.publisher.Flux;
+
+public interface FundService {
+  Flux<Fund> findByWalletId(Long walletId);
+}
