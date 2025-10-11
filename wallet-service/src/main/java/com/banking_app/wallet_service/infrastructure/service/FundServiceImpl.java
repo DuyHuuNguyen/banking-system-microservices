@@ -6,6 +6,7 @@ import com.banking_app.wallet_service.domain.repository.FundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -15,5 +16,11 @@ public class FundServiceImpl implements FundService {
   @Override
   public Flux<Fund> findByWalletId(Long walletId) {
     return this.fundRepository.findByWalletId(walletId);
+  }
+
+  @Override
+  public Mono<Fund> save(Fund fund) {
+    if (fund.getId() != null) fund.reUpdate();
+    return this.fundRepository.save(fund);
   }
 }

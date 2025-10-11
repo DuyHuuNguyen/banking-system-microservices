@@ -179,8 +179,6 @@ public class WalletFacadeImpl implements WalletFacade {
                                     })));
   }
 
-
-
   private CompletableFuture<WalletResponse> buildWalletResponse(Wallet wallet) {
     return this.walletDetailService
         .findByWalletId(wallet.getId())
