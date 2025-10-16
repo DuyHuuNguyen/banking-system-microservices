@@ -1,4 +1,4 @@
-package com.banking_app.transaction_service.infastructure.config;
+package com.banking_app.transaction_service.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

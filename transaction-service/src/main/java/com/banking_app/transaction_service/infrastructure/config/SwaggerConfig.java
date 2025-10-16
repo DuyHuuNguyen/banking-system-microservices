@@ -1,4 +1,4 @@
-package com.banking_app.transaction_service.infastructure.config;
+package com.banking_app.transaction_service.infrastructure.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

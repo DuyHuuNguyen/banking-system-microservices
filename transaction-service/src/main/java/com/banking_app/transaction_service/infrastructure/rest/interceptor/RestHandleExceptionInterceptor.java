@@ -1,4 +1,4 @@
-package com.banking_app.transaction_service.infastructure.rest.interceptor;
+package com.banking_app.transaction_service.infrastructure.rest.interceptor;
 
 import com.example.exception.EntityNotFoundException;
 import java.net.URI;
