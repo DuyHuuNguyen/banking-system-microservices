@@ -2,10 +2,12 @@ package com.banking_app.wallet_service.infrastructure.rest.controller;
 
 import com.banking_app.wallet_service.api.facade.FundFacade;
 import com.banking_app.wallet_service.api.request.UpsertFundRequest;
+import com.banking_app.wallet_service.api.response.FundResponse;
 import com.example.base.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,8 +46,16 @@ public class FundController {
   @Operation(tags = {"Funds APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  public Mono<BaseResponse<Void>> deleteFundById(@PathVariable Long id){
+  public Mono<BaseResponse<Void>> deleteFundById(@PathVariable Long id) {
     return this.fundFacade.deleteFundById(id);
   }
 
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Funds APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<List<FundResponse>>> findAllFund(@RequestBody Long walletId) {
+    return this.fundFacade.findAllFund(walletId);
+  }
 }

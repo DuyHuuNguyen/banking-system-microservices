@@ -2,6 +2,7 @@ package com.banking_app.wallet_service.infrastructure.facade;
 
 import com.banking_app.wallet_service.api.facade.FundFacade;
 import com.banking_app.wallet_service.api.request.UpsertFundRequest;
+import com.banking_app.wallet_service.api.response.FundResponse;
 import com.banking_app.wallet_service.application.service.FundService;
 import com.banking_app.wallet_service.application.service.WalletService;
 import com.banking_app.wallet_service.domain.entity.fund.Fund;
@@ -10,6 +11,7 @@ import com.example.base.BaseResponse;
 import com.example.enums.ErrorCode;
 import com.example.exception.EntityNotFoundException;
 import com.example.exception.PermissionDeniedException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -115,5 +117,22 @@ public class FundFacadeImpl implements FundFacade {
                                   });
                         }))
         .thenReturn(BaseResponse.ok());
+  }
+
+  @Override
+  public Mono<BaseResponse<List<FundResponse>>> findAllFund(Long walletId) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails ->
+                this.fundService
+                    .findByUserIdAndWalletId(securityUserDetails.getUserId(), walletId)
+                    .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(ErrorCode.FUND_NOT_FOUND)))
+                    .map(fund -> FundResponse.builder().build())
+                    .collectList()
+                    .map(fundResponses -> BaseResponse.build(fundResponses, true)));
   }
 }
