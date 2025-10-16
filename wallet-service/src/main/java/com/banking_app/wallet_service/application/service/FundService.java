@@ -12,4 +12,6 @@ public interface FundService {
   Mono<Fund> findById(Long id);
 
   Mono<Fund> findByUserIdAndFundId(Long userId, Long fundId);
+
+  Flux<Fund> findByUserIdAndWalletId(Long userId, Long walletId);
 }
