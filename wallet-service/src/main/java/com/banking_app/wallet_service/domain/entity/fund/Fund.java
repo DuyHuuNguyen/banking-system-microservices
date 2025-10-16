@@ -15,7 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("funds")
 public class Fund extends BaseEntity {
   @Column("fake_balance")
-  private Double fakeBalance;
+  private Double balance;
 
   @Column("fund_name")
   private String fundName;
@@ -25,4 +25,12 @@ public class Fund extends BaseEntity {
 
   @Column("wallet_id")
   private Long walletId;
+
+  public void changeName(String name) {
+    this.fundName = name;
+  }
+
+  public void changeDescription(String description) {
+    this.description = description;
+  }
 }

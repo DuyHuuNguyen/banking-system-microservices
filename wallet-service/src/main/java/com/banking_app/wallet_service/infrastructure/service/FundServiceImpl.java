@@ -1,12 +1,36 @@
 package com.banking_app.wallet_service.infrastructure.service;
 
 import com.banking_app.wallet_service.application.service.FundService;
+import com.banking_app.wallet_service.domain.entity.fund.Fund;
 import com.banking_app.wallet_service.domain.repository.FundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class FundServiceImpl implements FundService {
   private final FundRepository fundRepository;
+
+  @Override
+  public Flux<Fund> findByWalletId(Long walletId) {
+    return this.fundRepository.findByWalletId(walletId);
+  }
+
+  @Override
+  public Mono<Fund> save(Fund fund) {
+    if (fund.getId() != null) fund.reUpdate();
+    return this.fundRepository.save(fund);
+  }
+
+  @Override
+  public Mono<Fund> findById(Long id) {
+    return this.fundRepository.findById(id);
+  }
+
+  @Override
+  public Mono<Fund> findByUserIdAndFundId(Long userId, Long fundId) {
+    return this.fundRepository.findByUserIdAnAndFundId(userId, fundId);
+  }
 }

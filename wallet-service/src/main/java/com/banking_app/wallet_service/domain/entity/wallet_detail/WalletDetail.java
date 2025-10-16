@@ -20,4 +20,12 @@ public class WalletDetail extends BaseEntity {
 
   @Column("description")
   private String description;
+
+  public void rename(String newName) {
+    this.walletName = newName;
+  }
+
+  public void changeDescription(String newDescription) {
+    this.description = newDescription;
+  }
 }
