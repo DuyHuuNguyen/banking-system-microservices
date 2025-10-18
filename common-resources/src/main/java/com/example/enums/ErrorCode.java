@@ -23,7 +23,9 @@ public enum ErrorCode {
   WALLET_NOT_FOUND("Wallet is not found"),
   FUND_NOT_FOUND("Fund is not found"),
   DENY_SOFT_DELETE_ENTITY("Can't delete entity"),
-  UPDATE_ENTITY_ERROR("Update is error");
+  UPDATE_ENTITY_ERROR("Update is error"),
+  TRANSACTION_NOT_FOUND("Transaction is not found"),
+  SAVE_ENTITY_ERROR("Saving entities is error");
 
   private final String message;
 }

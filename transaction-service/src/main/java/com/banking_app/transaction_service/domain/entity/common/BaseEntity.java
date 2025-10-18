@@ -9,17 +9,22 @@ import org.springframework.data.relational.core.mapping.Column;
 @ToString
 @SuperBuilder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseEntity {
 
-  @Id private Long id;
+  @Id
+  @Column("id")
+  private Long id;
 
   @Column("version")
   @Builder.Default
   private Long version = 0L;
 
-  @Builder.Default boolean isActive = true;
+  @Column("is_active")
+  @Builder.Default
+  private boolean active = true;
 
   @Column("created_at")
   @Builder.Default
