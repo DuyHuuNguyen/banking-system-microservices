@@ -6,7 +6,6 @@ import com.banking_app.transaction_service.domain.repository.TransactionReposito
 import com.example.enums.ErrorCode;
 import com.example.exception.CacheException;
 import com.example.exception.EntityNotFoundException;
-import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +46,6 @@ public class TransactionServiceImpl implements TransactionService {
   @Override
   public Mono<Transaction> findById(Long id) {
     String transactionKey = String.format(this.TRANSACTION_KEY, id);
-
     return this.reactiveRedisTemplate
         .opsForValue()
         .get(transactionKey)
