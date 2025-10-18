@@ -22,7 +22,7 @@ public class TransactionServiceImpl implements TransactionService {
   private final String TRANSACTION_KEY = "TRANSACTION_KEY_%s";
   private final Duration timeoutOfTransactionInCache = Duration.ofSeconds(604800);
 
-  private final ReactiveRedisTemplate<String, Object> reactiveRedisTemplate;
+  private final ReactiveRedisTemplate<String, Transaction> reactiveRedisTemplate;
 
   @Override
   public Mono<Transaction> save(Transaction transaction) {

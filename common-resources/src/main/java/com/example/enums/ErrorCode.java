@@ -25,7 +25,8 @@ public enum ErrorCode {
   DENY_SOFT_DELETE_ENTITY("Can't delete entity"),
   UPDATE_ENTITY_ERROR("Update is error"),
   TRANSACTION_NOT_FOUND("Transaction is not found"),
-  SAVE_ENTITY_ERROR("Saving entities is error");
+  SAVE_ENTITY_ERROR("Saving entities is error"),
+  TRANSACTION_FEE_NOT_FOUND("Transaction fee is not found");
 
   private final String message;
 }
