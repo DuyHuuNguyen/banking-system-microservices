@@ -36,7 +36,7 @@ public class TransactionMethodServiceImpl implements TransactionMethodService {
               return this.reactiveRedisTemplate
                   .opsForValue()
                   .set(transactionKey, transactionMethodStored, timeoutOfTransactionInCache)
-                  .switchIfEmpty(Mono.error(new CacheException(ErrorCode.ACCOUNT_NOT_FOUND)))
+                  .switchIfEmpty(Mono.error(new CacheException(ErrorCode.CAN_NOT_CACHE)))
                   .thenReturn(transactionMethodStored);
             });
   }
@@ -52,7 +52,7 @@ public class TransactionMethodServiceImpl implements TransactionMethodService {
             this.transactionMethodRepository
                 .findById(id)
                 .switchIfEmpty(
-                    Mono.error(new EntityNotFoundException(ErrorCode.TRANSACTION_FEE_NOT_FOUND)))
+                    Mono.error(new EntityNotFoundException(ErrorCode.TRANSACTION_METHOD_FOUND)))
                 .flatMap(
                     transactionFee ->
                         this.reactiveRedisTemplate

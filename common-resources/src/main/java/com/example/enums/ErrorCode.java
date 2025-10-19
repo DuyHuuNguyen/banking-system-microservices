@@ -27,7 +27,10 @@ public enum ErrorCode {
   TRANSACTION_NOT_FOUND("Transaction is not found"),
   SAVE_ENTITY_ERROR("Saving entities is error"),
   TRANSACTION_FEE_NOT_FOUND("Transaction fee is not found"),
-  CAN_NOT_CACHE("Can't cache in redis");
+  CAN_NOT_CACHE("Can't cache in redis"),
+  TRANSACTION_METHOD_DETAIL_NOT_FOUND("Transaction method detail is not found"),
+  TRANSACTION_METHOD_FOUND("Transaction method is not fund"),
+  TRANSACTION_FEE_DETAIL_NOT_FOUND("Transaction fee detail is not found"),;
 
   private final String message;
 }
