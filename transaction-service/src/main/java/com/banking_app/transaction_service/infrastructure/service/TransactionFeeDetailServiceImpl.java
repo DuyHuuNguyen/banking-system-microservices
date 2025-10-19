@@ -54,7 +54,8 @@ public class TransactionFeeDetailServiceImpl implements TransactionFeeDetailServ
             this.transactionFeeDetailRepository
                 .findById(id)
                 .switchIfEmpty(
-                    Mono.error(new EntityNotFoundException(ErrorCode.TRANSACTION_FEE_DETAIL_NOT_FOUND)))
+                    Mono.error(
+                        new EntityNotFoundException(ErrorCode.TRANSACTION_FEE_DETAIL_NOT_FOUND)))
                 .flatMap(
                     transactionFeeDetail ->
                         this.transactionFeeDetailReactiveRedisTemplate

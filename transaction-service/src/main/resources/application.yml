@@ -32,6 +32,9 @@ logging:
 ---
 grpc:
   client:
+    wallet-service:
+      address: 'static://localhost:9091'
+      negotiationType: plaintext
     parse-token:
       address: 'static://localhost:9090'
       negotiationType: plaintext

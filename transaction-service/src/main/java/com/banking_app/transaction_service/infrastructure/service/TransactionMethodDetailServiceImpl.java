@@ -56,7 +56,8 @@ public class TransactionMethodDetailServiceImpl implements TransactionMethodDeta
             this.transactionMethodDetailRepository
                 .findById(id)
                 .switchIfEmpty(
-                    Mono.error(new EntityNotFoundException(ErrorCode.TRANSACTION_METHOD_DETAIL_NOT_FOUND)))
+                    Mono.error(
+                        new EntityNotFoundException(ErrorCode.TRANSACTION_METHOD_DETAIL_NOT_FOUND)))
                 .flatMap(
                     transactionMethodDetail ->
                         this.reactiveRedisTemplate
