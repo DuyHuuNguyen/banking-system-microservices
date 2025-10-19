@@ -21,7 +21,7 @@ public class TransactionFeeServiceImpl implements TransactionFeeService {
   private final String TRANSACTION_FEE_KEY = "TRANSACTION_FEE_KEY_%s";
   private final Duration timeoutOfTransactionInCache = Duration.ofSeconds(604800);
 
-  private final ReactiveRedisTemplate<String, Object> reactiveRedisTemplate;
+  private final ReactiveRedisTemplate<String, TransactionFee> reactiveRedisTemplate;
 
   @Override
   public Mono<TransactionFee> save(TransactionFee transactionFee) {
