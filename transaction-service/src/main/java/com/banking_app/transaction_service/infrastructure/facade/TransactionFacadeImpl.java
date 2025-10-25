@@ -2,12 +2,14 @@ package com.banking_app.transaction_service.infrastructure.facade;
 
 import com.banking_app.transaction_service.api.facde.TransactionFacade;
 import com.banking_app.transaction_service.api.request.CreateTransactionRequest;
+import com.banking_app.transaction_service.application.dto.CreateTransactionDTO;
 import com.banking_app.transaction_service.application.service.HandleTransactionProducerService;
 import com.banking_app.transaction_service.application.service.WalletGrpcClientService;
 import com.banking_app.transaction_service.infrastructure.security.SecurityUserDetails;
 import com.example.base.BaseResponse;
 import com.example.enums.ErrorCode;
 import com.example.exception.CacheException;
+import com.example.exception.PermissionDeniedException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -21,7 +23,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class TransactionFacadeImpl implements TransactionFacade {
   private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
-  private final WalletGrpcClientService walletService;
+  private final WalletGrpcClientService walletGrpcClientService;
   private final HandleTransactionProducerService handleTransactionProducerService;
 
   @Override
@@ -53,8 +55,34 @@ public class TransactionFacadeImpl implements TransactionFacade {
         .map(Authentication::getPrincipal)
         .cast(SecurityUserDetails.class)
         .flatMap(
-            securityUserDetails -> {
-              return Mono.just(BaseResponse.ok());
-            });
+            securityUserDetails ->
+                this.walletGrpcClientService
+                    .findWalletById(createTransactionRequest.getOriginatorInformationId())
+                    .flatMap(
+                        internalWalletResponse -> {
+                          boolean isNotEqualUserId =
+                              internalWalletResponse.getUserId()
+                                  != createTransactionRequest.getOriginatorInformationId();
+                          if (isNotEqualUserId)
+                            return Mono.error(
+                                new PermissionDeniedException(ErrorCode.NOT_OWNER_WALLET));
+                          CreateTransactionDTO createTransactionDTO =
+                              CreateTransactionDTO.builder()
+                                  .userIdOfOriginator(securityUserDetails.getUserId())
+                                  .beneficiaryInformationId(
+                                      createTransactionRequest.getBeneficiaryInformationId())
+                                  .originatorInformationId(
+                                      createTransactionRequest.getOriginatorInformationId())
+                                  .transactionTypeEnums(
+                                      createTransactionRequest.getTransactionTypeEnums())
+                                  .transactionBalance(
+                                      createTransactionRequest.getTransactionBalance())
+                                  .TransactionMethodId(
+                                      createTransactionRequest.getTransactionMethodId())
+                                  .build();
+                          return this.handleTransactionProducerService
+                              .pushIntoHandleCreateTransactionTopic(createTransactionDTO);
+                        })
+                    .then(Mono.just(BaseResponse.ok())));
   }
 }

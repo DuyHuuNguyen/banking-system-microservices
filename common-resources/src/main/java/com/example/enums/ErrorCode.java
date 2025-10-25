@@ -31,7 +31,7 @@ public enum ErrorCode {
   TRANSACTION_METHOD_DETAIL_NOT_FOUND("Transaction method detail is not found"),
   TRANSACTION_METHOD_FOUND("Transaction method is not fund"),
   TRANSACTION_FEE_DETAIL_NOT_FOUND("Transaction fee detail is not found"),
-  ;
+  NOT_OWNER_WALLET("Not owner a wallet");
 
   private final String message;
 }

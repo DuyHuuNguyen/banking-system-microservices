@@ -48,5 +48,10 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: group-id
     properties:
       spring.json.trusted.packages: "*"
+kafka-transaction:
+  handle-transaction-topic: handle-transaction
+  retry-transaction-topic: retry-transaction
+  dead-letter-transaction-topic: dead-letter-transaction

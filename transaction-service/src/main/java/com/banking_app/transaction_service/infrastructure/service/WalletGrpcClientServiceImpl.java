@@ -4,7 +4,6 @@ import com.banking_app.transaction_service.application.service.WalletGrpcClientS
 import com.example.server.grpc.wallet.InternalWalletRequest;
 import com.example.server.grpc.wallet.InternalWalletResponse;
 import com.example.server.grpc.wallet.WalletServiceGrpc;
-import jakarta.annotation.PostConstruct;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -20,10 +19,5 @@ public class WalletGrpcClientServiceImpl implements WalletGrpcClientService {
     InternalWalletRequest internalWalletRequest =
         InternalWalletRequest.newBuilder().setId(id).build();
     return Mono.just(walletServiceBlockingStub.findWalletById(internalWalletRequest));
-  }
-
-  @PostConstruct
-  public void init() {
-    findWalletById(1L).log().subscribe();
   }
 }
