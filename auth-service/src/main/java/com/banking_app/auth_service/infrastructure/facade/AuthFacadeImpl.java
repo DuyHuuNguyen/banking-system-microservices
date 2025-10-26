@@ -13,9 +13,7 @@ import com.banking_app.auth_service.domain.entity.role.Role;
 import com.banking_app.auth_service.infrastructure.security.SecurityUserDetails;
 import com.banking_app.auth_service.infrastructure.util.AccountSpecification;
 import com.banking_app.auth_service.infrastructure.util.GenerateOTPUntil;
-import com.example.base.AccountResponse;
-import com.example.base.BaseResponse;
-import com.example.base.PaginationResponse;
+import com.example.base.*;
 import com.example.dto.AccountDTO;
 import com.example.dto.AccountWithRoleDTO;
 import com.example.enums.ErrorCode;
@@ -409,6 +407,14 @@ public class AuthFacadeImpl implements AuthFacade {
         .findByPersonalIdentificationNumber(personalIdentifyInformation)
         .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
         .flatMap(this::buildAccountWithRole);
+  }
+
+  @Override
+  public Mono<OtpTransactionResponse> findOtpByUserId(OtpTransactionRequest otpTransactionRequest) {
+    return this.accountService
+        .findByUserId(otpTransactionRequest.getUserId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .map(account -> OtpTransactionResponse.builder().otp(account.getOtp()).build());
   }
 
   private Mono<AccountWithRoleDTO> buildAccountWithRole(Account account) {
