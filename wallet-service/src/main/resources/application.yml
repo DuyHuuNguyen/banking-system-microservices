@@ -23,6 +23,8 @@ logging:
   config: classpath:log4j2-spring.xml
 ---
 grpc:
+  server:
+      port: 9091
   client:
     wallet-hello:
       address: 'static://localhost:9090'

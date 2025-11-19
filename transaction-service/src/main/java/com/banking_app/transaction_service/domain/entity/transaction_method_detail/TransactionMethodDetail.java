@@ -4,10 +4,12 @@ import com.banking_app.transaction_service.domain.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@ToString(callSuper = true)
 @Getter
 @SuperBuilder
 @NoArgsConstructor

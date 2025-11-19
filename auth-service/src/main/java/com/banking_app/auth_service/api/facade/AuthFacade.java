@@ -4,9 +4,7 @@ import com.banking_app.auth_service.api.request.*;
 import com.banking_app.auth_service.api.response.ForgotPasswordResponse;
 import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
-import com.example.base.AccountResponse;
-import com.example.base.BaseResponse;
-import com.example.base.PaginationResponse;
+import com.example.base.*;
 import com.example.dto.AccountWithRoleDTO;
 import reactor.core.publisher.Mono;
 
@@ -38,4 +36,6 @@ public interface AuthFacade {
   Mono<BaseResponse<Void>> createAccount(UpsertAccountRequest upsertAccountRequest);
 
   Mono<AccountWithRoleDTO> validToken(String accessToken);
+
+  Mono<OtpTransactionResponse> findOtpByUserId(OtpTransactionRequest otpTransactionRequest);
 }

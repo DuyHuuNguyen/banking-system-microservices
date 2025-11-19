@@ -29,3 +29,29 @@ spring:
       location: file:./banner.txt
 logging:
   config: classpath:log4j2-spring.xml
+---
+grpc:
+  client:
+    wallet-service:
+      address: 'static://localhost:9091'
+      negotiationType: plaintext
+    parse-token:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
+---
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: group-id
+    properties:
+      spring.json.trusted.packages: "*"
+kafka-transaction:
+  handle-transaction-topic: handle-transaction
+  retry-transaction-topic: retry-transaction
+  dead-letter-transaction-topic: dead-letter-transaction

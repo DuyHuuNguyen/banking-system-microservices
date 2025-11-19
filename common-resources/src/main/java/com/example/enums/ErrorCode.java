@@ -23,7 +23,15 @@ public enum ErrorCode {
   WALLET_NOT_FOUND("Wallet is not found"),
   FUND_NOT_FOUND("Fund is not found"),
   DENY_SOFT_DELETE_ENTITY("Can't delete entity"),
-  UPDATE_ENTITY_ERROR("Update is error");
+  UPDATE_ENTITY_ERROR("Update is error"),
+  TRANSACTION_NOT_FOUND("Transaction is not found"),
+  SAVE_ENTITY_ERROR("Saving entities is error"),
+  TRANSACTION_FEE_NOT_FOUND("Transaction fee is not found"),
+  CAN_NOT_CACHE("Can't cache in redis"),
+  TRANSACTION_METHOD_DETAIL_NOT_FOUND("Transaction method detail is not found"),
+  TRANSACTION_METHOD_FOUND("Transaction method is not fund"),
+  TRANSACTION_FEE_DETAIL_NOT_FOUND("Transaction fee detail is not found"),
+  NOT_OWNER_WALLET("Not owner a wallet");
 
   private final String message;
 }

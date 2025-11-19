@@ -7,6 +7,8 @@ import com.banking_app.auth_service.api.response.LoginResponse;
 import com.banking_app.auth_service.api.response.RefreshTokenResponse;
 import com.example.base.AccountResponse;
 import com.example.base.BaseResponse;
+import com.example.base.OtpTransactionRequest;
+import com.example.base.OtpTransactionResponse;
 import com.example.base.PaginationResponse;
 import com.example.dto.AccountWithRoleDTO;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -145,5 +147,12 @@ public class AuthController {
   @ResponseStatus(HttpStatus.OK)
   public Mono<AccountResponse> findById(@PathVariable Long id) {
     return this.authFacade.findById(id);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/opt", headers = "secret-api-key=auth-23130075")
+  public Mono<OtpTransactionResponse> findOtpByUserId(
+      @RequestBody OtpTransactionRequest otpTransactionRequest) {
+    return this.authFacade.findOtpByUserId(otpTransactionRequest);
   }
 }

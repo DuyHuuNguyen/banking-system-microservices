@@ -1,7 +1,5 @@
 package com.example.server.grpc;
 
-//import java.util.concurrent.ExecutionException;
-
 import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
@@ -111,7 +109,7 @@ public final class AuthTokenServiceGrpc {
     /**
      */
     default void parseToken(com.example.server.grpc.AccessTokenRequest request,
-        io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse> responseObserver)  {
+        io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getParseTokenMethod(), responseObserver);
     }
   }
